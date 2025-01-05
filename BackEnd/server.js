@@ -10,6 +10,9 @@ const bcrypt = require("bcryptjs");
 const puppeteer = require("puppeteer");
 const nodemailer = require("nodemailer");
 const cron = require("node-cron");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+require('dotenv').config();
+const router = express.Router();
 
 // Middleware
 app.use(cors());
@@ -19,7 +22,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "pass123",
+  password: "1207",
   database: "kynhood",
 });
 
@@ -32,9 +35,110 @@ db.connect((err) => {
   }
 });
 
-const GEMINI_API_KEY = "AIzaSyAdFW-tfACDH3xlRiB2TFir0RZpm9-RxCc"; // Replace with your Gemini API Key
+const GEMINI_API_KEY = "AIzaSyAdFW-tfACDH3xlRiB2TFir0RZpm9-RxCc"; 
 const GEMINI_API_URL = "https://gemini.googleapis.com/v1beta1/summarizeText";
 const API_KEY = "AIzaSyA82SaGxS6_wXEffifV_QSopjWrk0EPJlA";
+
+
+const geminiApiKey = "AIzaSyAdFW-tfACDH3xlRiB2TFir0RZpm9-RxCc";
+const googleAI = new GoogleGenerativeAI(geminiApiKey);
+
+const geminiConfig = {
+  temperature: 0.9,
+  topP: 1,
+  topK: 1,
+  maxOutputTokens: 4096,
+};
+
+const geminiModel = googleAI.getGenerativeModel({
+  model: "gemini-pro",
+  geminiConfig,
+});
+
+function parseQuiz(rawQuiz) {
+  const questions = [];
+  const lines = rawQuiz.split('\n').filter(line => line.trim() !== '');
+  let currentQuestion = null;
+
+  lines.forEach(line => {
+    line = line.trim();
+
+    if (/^\d+\)/.test(line)) {
+      // Match the question number format (e.g., "1)", "2)", etc.)
+      // Save the previous question if any
+      if (currentQuestion) {
+        questions.push(currentQuestion);
+      }
+      // Start a new question
+      currentQuestion = { question: '', options: [], correctOption: '' };
+      currentQuestion.question = line.slice(line.indexOf(')') + 1).trim();
+    } else if (/^\([a-d]\)/i.test(line)) {
+      // Match the options (e.g., "(a)", "(b)", etc.)
+      currentQuestion?.options.push(line);
+    } else if (line.startsWith('Correct answer:')) {
+      // Match the correct answer
+      const correctOption = line.slice(line.indexOf(':') + 1).trim();
+      if (currentQuestion) {
+        currentQuestion.correctOption = correctOption;
+      }
+    }
+  });
+
+  // Add the last question to the array
+  if (currentQuestion) {
+    questions.push(currentQuestion);
+  }
+
+  return questions;
+}
+
+
+
+
+app.post('/generate-quiz', async (req, res) => {
+  const { newsData } = req.body;
+
+  if (!newsData) {
+    return res.status(400).json({ error: 'News data is required.' });
+  }
+
+  try {
+    const dataString = JSON.stringify(newsData, null, 2);
+
+    const result = await geminiModel.generateContent(`
+      With the news data given below, create 5 questions with 4 options each and mark the correct option.
+
+      consider the below format to give response:
+      1) According to the news, AI is primarily being used in healthcare for:
+      (a) Administrative tasks
+      (b) Diagnostics and treatment plans
+      (c) Patient education
+      (d) Drug discovery
+      Correct answer: (b)
+
+      Data to Analyze:
+      ${dataString}
+    `);
+
+    console.log("Result received from Gemini API:", result);
+
+    if (!result || !result.response || !result.response.text) {
+      return res.status(500).json({ error: 'Unable to generate quiz.' });
+    }
+
+    const rawQuiz = await result.response.text();
+    console.log("Generated Quiz:", rawQuiz);
+
+    const formattedQuiz = parseQuiz(rawQuiz); // Call parseQuiz to format the raw quiz text
+    res.status(200).json({ quiz: formattedQuiz });
+  } catch (error) {
+    console.error('Error generating quiz:', error);
+    res.status(500).json({ error: 'An unexpected error occurred.' });
+  }
+});
+
+
+
 // Function to fetch captions using Google APIs
 async function getVideoCaptions(videoId) {
   try {
@@ -321,6 +425,67 @@ app.get("/resolve-image-url", async (req, res) => {
   } catch (error) {
     console.error("Error resolving image URL:", error);
     res.status(500).send("Error resolving image URL");
+  }
+});
+
+app.get("/quiz", async (req, res) => {
+  try {
+    // Simulated JSON feed (replace with your API fetch if needed)
+    const jsonFeed = {
+      version: "1.0",
+      title: "Tamil Nadu News Feed",
+      items: [
+        {
+          id: "1",
+          url: "https://example.com/news/1",
+          title: "Tamil Nadu announces new industrial policy",
+          content_text: "The Tamil Nadu government has introduced a new industrial policy aimed at boosting investments.",
+          date_published: "2025-01-04T10:00:00Z",
+          authors: [{ name: "Author A" }],
+        },
+        {
+          id: "2",
+          url: "https://example.com/news/2",
+          title: "Cyclone warning issued for coastal districts",
+          content_text: "A cyclone warning has been issued for several coastal districts in Tamil Nadu, including Chennai and Nagapattinam.",
+          date_published: "2025-01-04T08:30:00Z",
+          authors: [{ name: "Author B" }],
+        },
+      ],
+    };
+
+    // Generate quiz questions from items
+    const quizQuestions = jsonFeed.items.map((item) => {
+      // Create question based on the article title
+      const question = `What is the main highlight of this article: "${item.title}"?`;
+
+      // Generate plausible options (these can be more sophisticated based on NLP)
+      const options = [
+        `About ${item.content_text.slice(0, 20)}...`,
+        `Not related to ${item.title.slice(0, 15)}...`,
+        "Unrelated statement 1",
+        "Unrelated statement 2",
+      ];
+
+      // Correct answer is the first option
+      const correctAnswer = options[0];
+
+      // Shuffle options (optional for better UX)
+      const shuffledOptions = options.sort(() => Math.random() - 0.5);
+
+      return {
+        question,
+        options: shuffledOptions,
+        answer: correctAnswer,
+        url: item.url, // Include article URL for reference
+      };
+    });
+
+    // Respond with quiz questions
+    res.json({ questions: quizQuestions });
+  } catch (error) {
+    console.error("Error generating quiz:", error.message);
+    res.status(500).json({ error: "Failed to generate quiz questions." });
   }
 });
 

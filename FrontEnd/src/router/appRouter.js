@@ -6,6 +6,7 @@ import PersonalizedPage from '../pages/PersonalizedPage/PersonalizedPage';
 import { NotRouteFound } from '../components';
 import RegistrationForm from '../pages/Login/RegistrationForm';
 import PHomePage from '../pages/HomePage/PHomePage';
+import QuizPage from '../pages/QuizPage';
 
 const appRouter = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const appRouter = createBrowserRouter([
 			{
 				path: "/login",
 				element: <RegistrationForm/>
+			},
+			{
+				path: "/quiz",
+				element: <QuizPage/>
 			}
 		]
 	}
