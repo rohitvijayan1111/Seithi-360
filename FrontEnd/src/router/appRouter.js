@@ -7,6 +7,7 @@ import { NotRouteFound } from "../components";
 import RegistrationForm from "../pages/Login/RegistrationForm";
 import PHomePage from "../pages/HomePage/PHomePage";
 import Landingpage from "../components/LandingPage/LandingPage";
+import Feed from "../components/Feed/Feed";
 
 const appRouter = createBrowserRouter([
   {
@@ -19,7 +20,7 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "/home",
-        element: <HomePage />,
+        element: <Feed />,
       },
       {
         path: "/phome",
