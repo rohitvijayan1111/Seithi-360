@@ -32,7 +32,7 @@ const appRouter = createBrowserRouter([
       {
         path: "/seithi360",
         element: <LandingPage />,
-      }
+      },
       {
         path: "/personalized",
         element: <PersonalizedPage />,
