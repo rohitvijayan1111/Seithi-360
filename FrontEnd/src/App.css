@@ -1,0 +1,39 @@
+.App {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.articles-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.article-card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px 0;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.article-image {
+  width: 100px;
+  height: auto;
+  margin-right: 10px;
+}
+
+.article-content {
+  flex-grow: 1;
+}
+
+.article-source,
+.article-date {
+  font-size: 0.9em;
+  color: #555;
+}
