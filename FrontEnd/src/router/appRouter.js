@@ -11,6 +11,7 @@ import Feed from "../components/Feed/Feed";
 import QuizPage from "../pages/QuizPage";
 import QuizSection from "../pages/QuizSection";
 import LandingPage from "../components/LandingPage/LandingPage";
+import Personalization from "../components/Personalization/Personalization";
 
 const appRouter = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/seithi360",
         element: <LandingPage />,
+      },
+      {
+        path:"/yourfeed",
+        element:<Personalization />
       },
       {
         path: "/personalized",
