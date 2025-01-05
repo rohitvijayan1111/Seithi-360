@@ -1,0 +1,43 @@
+.modern-navbar {
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+}
+
+.nav-brand {
+  font-size: 1.5rem;
+  color: #6f42c1;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.nav-brand img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.navbar-nav .nav-link {
+  color: #6f42c1;
+  font-weight: 500;
+  margin-right: 15px;
+}
+
+.navbar-nav .nav-link.active {
+  color: white;
+  background-color: #6f42c1;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+.date-picker .react-datepicker__input-container input {
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
