@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+import QuizSection from "../../../pages/QuizSection";
 
 const Sidebar = () => {
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+
   return (
     <div className="space-y-6">
       {/* Top News Section */}
@@ -22,10 +25,17 @@ const Sidebar = () => {
       </div>
 
       {/* Puzzle Section */}
-      <div className="bg-white rounded-lg shadow-lg p-4">
-        <h3 className="text-lg font-bold mb-2">Puzzle</h3>
-        <p className="text-sm text-gray-600">Solve today's brain teaser!</p>
+      <div
+        className="bg-white rounded-lg shadow-lg p-4 cursor-pointer hover:bg-gray-100"
+        onClick={() => setIsQuizOpen(true)} // Open the quiz modal
+      >
+        <h3 className="text-lg font-bold mb-2">Quiz</h3>
+        <p className="text-sm text-gray-600">Solve today's Quiz!</p>
       </div>
+
+      {/* QuizSection Modal */}
+      <QuizSection isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
+      
     </div>
   );
 };

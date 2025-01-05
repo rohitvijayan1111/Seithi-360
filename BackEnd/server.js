@@ -98,45 +98,55 @@ function parseQuiz(rawQuiz) {
 app.post('/generate-quiz', async (req, res) => {
   const { newsData } = req.body;
 
-  if (!newsData) {
-    return res.status(400).json({ error: 'News data is required.' });
+  if (!newsData || !Array.isArray(newsData) || newsData.length === 0) {
+    return res.status(400).json({ error: 'News data is required and should be an array.' });
   }
 
   try {
-    const dataString = JSON.stringify(newsData, null, 2);
+    // Store all generated questions
+    const quiz = [];
 
-    const result = await geminiModel.generateContent(`
-      With the news data given below, create 5 questions with 4 options each and mark the correct option.
+    // Loop through each news article to generate a question
+    for (const article of newsData) {
+      const dataString = JSON.stringify(article, null, 2);
 
-      consider the below format to give response:
-      1) According to the news, AI is primarily being used in healthcare for:
-      (a) Administrative tasks
-      (b) Diagnostics and treatment plans
-      (c) Patient education
-      (d) Drug discovery
-      Correct answer: (b)
+      // Generate question for each news article
+      const result = await geminiModel.generateContent(`
+       Based on the following news, create one multiple-choice question with 4 options. Make sure the question is relevant to the news provided. Here is the news to analyze:
 
-      Data to Analyze:
-      ${dataString}
-    `);
+        Format the response as:
+        1) According to the news, AI is primarily being used in healthcare for:
+        (a) Administrative tasks
+        (b) Diagnostics and treatment plans
+        (c) Patient education
+        (d) Drug discovery
+        Correct answer: (b)
+        
+        the news need not to be in this context.
 
-    console.log("Result received from Gemini API:", result);
+        Data to Analyze:
+        ${dataString}
+      `);
 
-    if (!result || !result.response || !result.response.text) {
-      return res.status(500).json({ error: 'Unable to generate quiz.' });
+      console.log("Result received from Gemini API:", result);
+
+      if (!result || !result.response || !result.response.text) {
+        return res.status(500).json({ error: 'Unable to generate quiz for some news.' });
+      }
+
+      const rawQuiz = await result.response.text();
+      console.log("Generated Quiz for this article:", rawQuiz);
+
+      const formattedQuiz = parseQuiz(rawQuiz); // Call parseQuiz to format the raw quiz text
+      quiz.push(formattedQuiz[0]); // Assuming each result is a single question
     }
 
-    const rawQuiz = await result.response.text();
-    console.log("Generated Quiz:", rawQuiz);
-
-    const formattedQuiz = parseQuiz(rawQuiz); // Call parseQuiz to format the raw quiz text
-    res.status(200).json({ quiz: formattedQuiz });
+    res.status(200).json({ quiz });
   } catch (error) {
     console.error('Error generating quiz:', error);
     res.status(500).json({ error: 'An unexpected error occurred.' });
   }
 });
-
 
 
 // Function to fetch captions using Google APIs
