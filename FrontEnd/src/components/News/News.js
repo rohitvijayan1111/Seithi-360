@@ -25,7 +25,7 @@ const PixelatedImage = ({ imageUrl, pixelationLevel }) => {
     let img = new Image();
 
     const loadImage = (url) => {
-      img.crossOrigin = "anonymous"; // Allow cross-origin images
+      img.crossOrigin = "anonymous"; 
       img.src = url;
 
       img.onload = () => {

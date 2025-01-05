@@ -342,7 +342,7 @@ app.get("/scrape3", async (req, res) => {
   try {
     console.log("testing 123");
 
-    const searchQuery = req.query.q; // Get the search query from the request
+    const searchQuery = req.query.q; 
     if (!searchQuery) {
       return res.status(400).send("Search query is required.");
     }
@@ -388,7 +388,7 @@ app.get("/scrape3", async (req, res) => {
 
     // Resolve image URLs
     const articlesWithImages = await Promise.all(
-      elements.slice(0, 10).map(async (article) => ({
+      elements.slice(0, 5).map(async (article) => ({
         ...article,
         imgSrc: article.imgSrc ? await getImageUrl(article.imgSrc) : null,
       }))
