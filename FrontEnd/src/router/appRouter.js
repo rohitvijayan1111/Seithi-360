@@ -8,6 +8,8 @@ import RegistrationForm from "../pages/Login/RegistrationForm";
 import PHomePage from "../pages/HomePage/PHomePage";
 import Landingpage from "../components/LandingPage/LandingPage";
 import Feed from "../components/Feed/Feed";
+import QuizPage from "../pages/QuizPage";
+import QuizSection from "../pages/QuizSection";
 
 const appRouter = createBrowserRouter([
   {
@@ -38,6 +40,14 @@ const appRouter = createBrowserRouter([
         path: "/login",
         element: <RegistrationForm />,
       },
+	  {
+		path: "/quiz",
+		element: <QuizPage/>
+	  },
+	  {
+		path: "/quizw",
+		element: <QuizSection/>
+	  }
     ],
   },
 ]);
