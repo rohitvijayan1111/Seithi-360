@@ -18,7 +18,7 @@ export default function BentoGrid() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.3 }}
         >
-          Everything you need to stay informed with Seithi360
+          Everything you need to stay informed with செய்தி360
         </motion.p>
 
         <motion.div
