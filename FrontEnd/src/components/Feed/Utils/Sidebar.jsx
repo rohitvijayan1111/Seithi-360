@@ -1,4 +1,5 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
+import QuizSection from "../../../pages/QuizSection";
 const categoryFeedUrls = {
   Sports: "https://rss.app/feeds/v1.1/SXgRLLL6qAQEQRJ6.json",
   Technology: "https://rss.app/feeds/v1.1/gxXiSULzzhoYx8XJ.json",  
