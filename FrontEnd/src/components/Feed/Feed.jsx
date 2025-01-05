@@ -10,7 +10,7 @@ import MainNewsComponent from "./Utils/MainNews";
 
 const Feed = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  const district = sessionStorage.getItem("district");
   return (
     <div className="bg-gray-50 text-gray-900 min-h-screen">
       {/* Header Section */}
@@ -24,11 +24,14 @@ const Feed = () => {
           <TopNewsCarousel />
         </section>
 
-        {/* Local News Section */}
+      {/* Local News Section */}
         <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">Local News</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            Local News {district ? `- ${district}` : ""}
+          </h2>
           <LocalNewsTicker />
         </section>
+
 
         {/* Grid Layout: Main News and Sidebar */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -8,7 +8,7 @@ const TopNewsCarousel = () => {
     const fetchNews = async () => {
       try {
         const response = await fetch(
-          "https://rss.app/feeds/v1.1/dtpL0LmJRlJUSJ7t.json"
+          "https://rss.app/feeds/v1.1/9MzP9pTs1LpUZkmx.json"
         );
         const data = await response.json();
         const items = data.items.map((item) => ({
