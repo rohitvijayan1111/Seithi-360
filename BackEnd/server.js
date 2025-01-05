@@ -10,6 +10,23 @@ const bcrypt = require("bcryptjs");
 const puppeteer = require("puppeteer");
 const nodemailer = require("nodemailer");
 const cron = require("node-cron");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const geminiApiKey = "AIzaSyAdFW-tfACDH3xlRiB2TFir0RZpm9-RxCc";
+const googleAI = new GoogleGenerativeAI(geminiApiKey);
+
+const geminiConfig = {
+  temperature: 0.9,
+  topP: 1,
+  topK: 1,
+  maxOutputTokens: 4096,
+};
+
+const geminiModel = googleAI.getGenerativeModel({
+  model: "gemini-pro",
+  geminiConfig,
+});
+
+
 
 // Middleware
 app.use(cors());
@@ -19,7 +36,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "Rithik@28raja",
+  password: "pass123",
   database: "kynhood",
 });
 
@@ -602,6 +619,36 @@ async function sendEmail(recipient, subject, htmlContent) {
     }
   }
 }
+
+app.post('/summarize-news', async (req, res) => {
+  const { newsData } = req.body;
+
+  if (!newsData) {
+    return res.status(400).json({ error: 'News data is required.' });
+  }
+
+  try {
+    const result = await geminiModel.generateContent(`
+      Summarize the following news data into a concise paragraph for each category. Focus on the key highlights for each category.
+
+      Data to Analyze:
+      ${newsData}
+    `);
+
+    console.log("Result received from Gemini API:", result);
+
+    if (!result || !result.response || !result.response.text) {
+      return res.status(500).json({ error: 'Unable to generate summary.' });
+    }
+
+    const summary = await result.response.text();
+    res.status(200).json({ summary });
+  } catch (error) {
+    console.error('Error generating summary:', error);
+    res.status(500).json({ error: 'An unexpected error occurred.' });
+  }
+});
+
 
 // Main Workflow
 cron.schedule('*/30 * * * *', async () => {

@@ -21,7 +21,7 @@ const categories = [
 const categoryFeedUrls = {
   General: "https://rss.app/feeds/D4WOO7MkrKgg1TwF.xml",
   Sports: "https://rss.app/feeds/SXgRLLL6qAQEQRJ6.xml",
-  Technology: "https://rss.app/feeds/zciHKszsHyt8CgnE.xml",
+  Technology: "https://rss.app/feeds/zciHKszsHyt8CgnE.xml",  
   Politics: "https://rss.app/feeds/JHRIb44ZGKHhLNDz.xml",
   Business: "https://rss.app/feeds/VAnnNyKqS5MgoLpF.xml",
   Entertainment: "https://rss.app/feeds/3SSCaYfwjpRPmiDZ.xml",
@@ -61,7 +61,6 @@ const MainNewsComponent = () => {
   useEffect(() => {
     fetchFeed(activeCategory);
   }, [activeCategory]);
-
   const renderCategoryContent = () => {
     switch (activeCategory) {
       case "General":
