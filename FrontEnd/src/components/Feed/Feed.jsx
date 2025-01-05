@@ -20,7 +20,7 @@ const Feed = () => {
       <main className="max-w-7xl mx-auto p-4">
         {/* Top News Section */}
         <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">Top News</h2>
+          <h2 className="text-2xl font-bold">Top News</h2>
           <TopNewsCarousel />
         </section>
 
