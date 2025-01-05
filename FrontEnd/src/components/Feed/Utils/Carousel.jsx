@@ -1,39 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 
 const TopNewsCarousel = () => {
-  const topNews = [
-    {
-      title: "Breaking News: World Economy Rebounds",
-      description:
-        "Global markets are showing signs of recovery after a year-long downturn.",
-      imageUrl: "https://via.placeholder.com/300x200/FF5733/fff?text=News+1",
-    },
-    {
-      title: "Tech Giants Announce New AI Innovations",
-      description:
-        "Leading tech companies unveil their most advanced AI models yet.",
-      imageUrl: "https://via.placeholder.com/300x200/33B5FF/fff?text=News+2",
-    },
-    {
-      title: "Climate Change: New Policies on the Horizon",
-      description:
-        "World leaders gather to discuss the future of climate action.",
-      imageUrl: "https://via.placeholder.com/300x200/FFC300/fff?text=News+3",
-    },
-    {
-      title: "SpaceX Launches New Mars Mission",
-      description:
-        "NASA and SpaceX team up for an ambitious Mars exploration mission.",
-      imageUrl: "https://via.placeholder.com/300x200/DAF7A6/fff?text=News+4",
-    },
-    {
-      title: "New Advances in Medical Research",
-      description:
-        "Groundbreaking discoveries in cancer treatment and gene therapy.",
-      imageUrl: "https://via.placeholder.com/300x200/9B59B6/fff?text=News+5",
-    },
-  ];
+  const [topNews, setTopNews] = useState([]);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch(
+          "https://rss.app/feeds/v1.1/dtpL0LmJRlJUSJ7t.json"
+        );
+        const data = await response.json();
+        const items = data.items.map((item) => ({
+          title: item.title,
+          description: item.content_text,
+          imageUrl: item.image,
+          url: item.url,
+        }));
+        setTopNews(items);
+      } catch (error) {
+        console.error("Failed to fetch news:", error);
+      }
+    };
+
+    fetchNews();
+  }, []);
 
   const settings = {
     dots: true,
@@ -68,24 +59,40 @@ const TopNewsCarousel = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <Slider {...settings}>
-        {topNews.map((news, index) => (
-          <div
-            key={index}
-            className="relative group rounded-xl overflow-hidden shadow-xl transition-all duration-300 hover:scale-105"
-          >
-            <img
-              src={news.imageUrl}
-              alt={news.title}
-              className="w-full h-48 md:h-56 lg:h-64 object-cover rounded-xl"
-            />
-            <div className="absolute bottom-0 left-0 bg-gradient-to-t from-black to-transparent w-full p-4 text-white opacity-80 group-hover:opacity-100 transition-opacity rounded-xl">
-              <h3 className="text-lg sm:text-xl font-semibold">{news.title}</h3>
-              <p className="text-sm sm:text-base mt-2">{news.description}</p>
+      {topNews.length > 0 ? (
+        <Slider {...settings}>
+          {topNews.map((news, index) => (
+            <div
+              key={index}
+              className="relative group rounded-xl overflow-hidden shadow-xl transition-all duration-300 hover:scale-105"
+            >
+              <img
+                src={news.imageUrl || "https://via.placeholder.coms/300x200"}
+                alt={news.title}
+                className="w-full h-48 md:h-56 lg:h-64 object-cover rounded-xl"
+              />
+              <div className="absolute bottom-0 left-0 bg-gradient-to-t from-black to-transparent w-full p-4 text-white opacity-80 group-hover:opacity-100 transition-opacity rounded-xl">
+                <h3 className="text-lg sm:text-xl font-semibold">
+                  {news.title}
+                </h3>
+                <p className="text-sm sm:text-base mt-2">
+                  {news.description}
+                </p>
+                <a
+                  href={news.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:underline mt-2 block"
+                >
+                  Read More
+                </a>
+              </div>
             </div>
-          </div>
-        ))}
-      </Slider>
+          ))}
+        </Slider>
+      ) : (
+        <p className="text-center text-gray-500">Loading news...</p>
+      )}
     </div>
   );
 };
