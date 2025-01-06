@@ -964,7 +964,7 @@ app.post("/summarize-news", async (req, res) => {
 });
 
 // Main Workflow
-cron.schedule("*/1 * * * *", async () => {
+cron.schedule("*/30 * * * *", async () => {
   console.log("Running Cron Job - Sending Daily News Email");
 
   try {
