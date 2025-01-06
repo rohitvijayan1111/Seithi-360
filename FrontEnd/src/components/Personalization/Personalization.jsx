@@ -1,10 +1,186 @@
-import React, { useState } from "react";
+import React, { useState,useEffect,useRef,useCallback} from "react";
 import SidebarP from "./utils/SideBarP";
 import Example from "../Feed/Header/Header";
+import axios from "axios";
 
 const Personalization = () => {
   const [content, setContent] = useState("welcome");
+  const [loadedSections, setLoadedSections] = useState({});
+  const [sectionData, setSectionData] = useState({});
+  const observerRef = useRef(null);
+
+  // Fetch scraped articles for a specific interest
+  const fetchScrapedArticles = async (query) => {
+    try {
+      const response = await axios.get("http://localhost:5000/scrape3", {
+        params: { q: query || "Trending News" },
+      });
+      return response.data.articles || [];
+    } catch (error) {
+      console.error("Error fetching scraped articles:", error);
+      return [];
+    }
+  };
+
+  // Transform articles into required format
+  const formatArticles = (articles) => 
+    articles.map((article) => ({
+      title: article.title,
+      description: article.source || "No description available",
+      imageUrl: article.imgSrc || "https://via.placeholder.com/300x200",
+      url: article.url,
+    }));
+
+  // Lazy load section data
+  const loadSectionData = useCallback(async (section) => {
+    // Prevent re-fetching already loaded sections
+    if (loadedSections[section]) return;
+
+    try {
+      const articles = await fetchScrapedArticles(`${section} News`);
+      const formattedArticles = formatArticles(articles);
+
+      setSectionData(prev => ({
+        ...prev,
+        [section]: formattedArticles
+      }));
+
+      setLoadedSections(prev => ({
+        ...prev,
+        [section]: true
+      }));
+    } catch (error) {
+      console.error(`Error loading ${section} section:`, error);
+    }
+  }, [loadedSections]);
+
+  // Intersection Observer for lazy loading
+  useEffect(() => {
+    const preferences = JSON.parse(sessionStorage.getItem("preference")) || [];
+    
+    // Preload first two sections
+    preferences.slice(0, 2).forEach(section => {
+      loadSectionData(section);
+    });
+
+    // Setup Intersection Observer
+    const createObserver = () => {
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const section = entry.target.getAttribute('data-section');
+              if (section && !loadedSections[section]) {
+                loadSectionData(section);
+              }
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      return observerRef.current;
+    };
+
+    const observer = createObserver();
+
+    // Observe section placeholders
+    const placeholders = document.querySelectorAll('.section-placeholder');
+    placeholders.forEach(placeholder => observer.observe(placeholder));
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [loadSectionData]);
+
+  const renderMyInterestContent = () => {
+    const preferences = JSON.parse(sessionStorage.getItem("preference")) || [];
   
+    // Filter preferences to only include sections with loaded data
+    const loadedPreferences = preferences.filter(section => sectionData[section]);
+  
+    return (
+      <div className="text-lg text-purple-600">
+        <h2 className="text-2xl font-bold mb-4">My Interest</h2>
+        <div className="space-y-4">
+          {preferences.length > 0 ? (
+            loadedPreferences.length > 0 ? (
+              loadedPreferences.map((section, sectionIndex) => (
+                <div key={sectionIndex}>
+                  <h3 className="text-xl font-semibold mb-3">{section}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {sectionData[section].map((news, newsIndex) => (
+                      <div key={newsIndex} className="p-4">
+                        <div className="bg-white rounded-lg shadow-md hover:shadow-xl overflow-hidden transition-shadow duration-300">
+                          <img 
+                            src={news.imageUrl} 
+                            alt={news.title} 
+                            className="w-full h-48 object-cover" 
+                          />
+                          <div className="p-4">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                              {news.title}
+                            </h3>
+                            <p className="text-sm text-gray-600 line-clamp-2">
+                              {news.description}
+                            </p>
+                            <a 
+                              href={news.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="text-blue-500 hover:underline text-sm mt-2 block"
+                            >
+                              Read More
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="flex justify-center items-center h-64">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4 mx-auto"></div>
+                  <p className="text-gray-600">Loading your interests...</p>
+                </div>
+              </div>
+            )
+          ) : (
+            <p className="text-gray-500">
+              No preferences set yet. Please add some preferences!
+            </p>
+          )}
+  
+          {/* Render placeholders for not-yet-loaded sections */}
+          {preferences.length > 0 && 
+            preferences
+              .filter(section => !sectionData[section])
+              .map((section, index) => (
+                <div 
+                  key={index} 
+                  className="section-placeholder" 
+                  data-section={section}
+                >
+                  <div className="bg-gray-100 rounded-lg p-4 animate-pulse">
+                    <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {[...Array(3)].map((_, cardIndex) => (
+                        <div key={cardIndex} className="bg-gray-200 rounded-lg h-64"></div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))
+          }
+        </div>
+      </div>
+    );
+  };
+
+
   const renderContent = () => {
     switch (content) {
       case "youtube-news":
@@ -36,39 +212,7 @@ const Personalization = () => {
           </div>
         );
       case "my-interest":
-        // Retrieve the preferences from session storage
-        const preferences =
-          JSON.parse(sessionStorage.getItem("preference")) || [];
-
-        return (
-          <div className="text-lg text-purple-600">
-            <h2 className="text-2xl font-bold mb-4">My Interest</h2>
-            <div className="space-y-4">
-              {preferences.length > 0 ? (
-                <div className="bg-white p-4 rounded-lg shadow-md">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                    Your Preferences
-                  </h3>
-                  <ul className="space-y-2">
-                    {preferences.map((interest, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center text-sm text-gray-700 py-2 px-4 rounded-lg border border-gray-200 hover:bg-indigo-50 hover:text-indigo-600"
-                      >
-                        <span className="mr-2">🔹</span>
-                        {interest}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <p className="text-gray-500">
-                  No preferences set yet. Please add some preferences!
-                </p>
-              )}
-            </div>
-          </div>
-        );
+        return renderMyInterestContent();
       default:
         return (
           <div className="text-lg text-gray-600">
