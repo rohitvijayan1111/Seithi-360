@@ -36,7 +36,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "1207",
+  password: "pass123",
   database: "kynhood",
 });
 
@@ -902,7 +902,8 @@ cron.schedule('*/30 * * * *', async () => {
 });
 
 const fetchYouTubeVideos = async (query) => {
-  const apiKey = 'AIzaSyC6ZbKJcjjJXv6l73-5Ij-rSS4oOQ_jn0s'; // Replace with your API key
+  //const apiKey = 'AIzaSyC6ZbKJcjjJXv6l73-5Ij-rSS4oOQ_jn0s'; // Replace with your API key
+  const apiKey='AIzaSyBKDEl_EH5J98Z5HEYTPfruJ6JsEe56H-c';
   const baseUrl = 'https://www.googleapis.com/youtube/v3/search';
   try {
     const response = await axios.get(baseUrl, {

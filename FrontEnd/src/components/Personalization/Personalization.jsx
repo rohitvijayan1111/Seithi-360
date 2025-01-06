@@ -95,7 +95,87 @@ const TrendingNews = () => {
     </div>
   );
 };
+// Add this new component at the top of your file or in a separate file
+const Top10News = () => {
+  const [topNews, setTopNews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchTop10News = async () => {
+      try {
+        const response = await fetch(
+          "https://rss.app/feeds/v1.1/TVSFBCwYGkbvlq8d.json"
+        );
+        const data = await response.json();
+        const items = data.items.map((item) => ({
+          title: item.title,
+          description: item.content_text || "No description available",
+          imageUrl: item.image || "https://via.placeholder.com/300x200",
+          url: item.url,
+          pubDate: item.date_published
+        }));
+        setTopNews(items);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch news:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchTop10News();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4 mx-auto"></div>
+          <p className="text-gray-600">Loading Top 10 News...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-lg text-red-600">
+      <h2 className="text-2xl font-bold mb-4">Top 10 News</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {topNews.map((news, newsIndex) => (
+          <div key={newsIndex} className="p-4">
+            <div className="bg-white rounded-lg shadow-md hover:shadow-xl overflow-hidden transition-shadow duration-300">
+              <img 
+                src={news.imageUrl} 
+                alt={news.title} 
+                className="w-full h-48 object-cover" 
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+                  {news.title}
+                </h3>
+                <p className="text-sm text-gray-600 line-clamp-2">
+                  {news.description}
+                </p>
+                <div className="flex justify-between items-center mt-2">
+                  <a 
+                    href={news.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-blue-500 hover:underline text-sm"
+                  >
+                    Read More
+                  </a>
+                  <span className="text-xs text-gray-500">
+                    {new Date(news.pubDate).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 const Personalization = () => {
   const [content, setContent] = useState("welcome");
   const [loadedSections, setLoadedSections] = useState({});
@@ -151,7 +231,7 @@ const Personalization = () => {
         viewCount: video.viewCount,
         pubDate:formatDate(video.pubDate),
     }));
-
+    
   // Fetch YouTube videos for specific sections
   const fetchYouTubeVideosForSection = async (section) => {
     try {
@@ -518,12 +598,7 @@ const Personalization = () => {
           </div>
         );
       case "top-10":
-        return (
-          <div className="text-lg text-red-600">
-            <h2 className="text-2xl font-bold mb-4">Top 10 News</h2>
-            <p>Explore the most trending topics right now!</p>
-          </div>
-        );
+        return <Top10News />
       case "others":
         return (
           <div className="text-lg text-yellow-600">
