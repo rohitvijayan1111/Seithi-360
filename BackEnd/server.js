@@ -36,7 +36,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "pass123",
+  password: "1207",
   database: "kynhood",
 });
 
@@ -86,6 +86,61 @@ function parseQuiz(rawQuiz) {
   return questions;
 }
 
+app.get('/api/trending-hashtags', (req, res) => {
+  const query = `
+    WITH split_hashtags AS (
+      SELECT 
+        id, 
+        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(hashtags, ' ', numbers.n), ' ', -1)) AS hashtag
+      FROM 
+        (SELECT 1 AS n UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5) numbers
+      JOIN 
+        shareviews
+      ON 
+        CHAR_LENGTH(hashtags) - CHAR_LENGTH(REPLACE(hashtags, ' ', '')) + 1 >= numbers.n
+    )
+    SELECT 
+      REPLACE(hashtag, '#', '') AS hashtag, 
+      COUNT(*) AS count
+    FROM 
+      split_hashtags
+    GROUP BY 
+      hashtag
+    ORDER BY 
+      count DESC
+    LIMIT 5; -- Top 5 trending hashtags
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching trending hashtags:', err);
+      res.status(500).send('Database error');
+      return;
+    }
+    res.json(results);
+  });
+});
+
+app.get("/api/getPostsByHashtag/:hashtag", (req, res) => {
+  const { hashtag } = req.params; // Extract the hashtag from the URL params
+
+  // Query your database for posts containing the specified hashtag
+  const query = `
+    SELECT * 
+    FROM shareviews 
+    WHERE hashtags LIKE ? 
+    ORDER BY created_at DESC;
+  `;
+  
+  // Use parameterized queries to prevent SQL injection
+  db.query(query, [`%${hashtag}%`], (err, results) => {
+    if (err) {
+      console.error("Error fetching posts by hashtag:", err);
+      return res.status(500).send("Database error");
+    }
+    res.json(results); // Return the results as JSON
+  });
+});
 
 app.post('/api/shareview', (req, res) => {
   const { username, thoughts, hashtags, image_url, title, link } = req.body;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaFootballBall, FaLaptopCode, FaLandmark, FaChartLine, FaFilm, FaNewspaper } from "react-icons/fa";
 import { parseString } from "xml2js";
-import axios from "axios"; // If you're using axios
+import axios from "axios";
 
 const categories = [
   { name: "General", icon: <FaNewspaper /> },
@@ -27,8 +27,8 @@ const MainNewsComponent = () => {
   const [loading, setLoading] = useState(false);
   const [views, setViews] = useState({});
   const [alertMessage, setAlertMessage] = useState("");
-
   const [inputData, setInputData] = useState({});
+  const [activeShareViewIndex, setActiveShareViewIndex] = useState(null); // Track which post has Share View visible
 
   const fetchFeed = async (category) => {
     setLoading(true);
@@ -111,14 +111,11 @@ const MainNewsComponent = () => {
     }
   };
 
+  const toggleShareViewVisibility = (index) => {
+    setActiveShareViewIndex(activeShareViewIndex === index ? null : index); // Toggle visibility
+  };
+
   const renderCategoryContent = () => {
-    switch (activeCategory) {
-      case "General":
-      case "Sports":
-      case "Technology":
-      case "Politics":
-      case "Business":
-      case "Entertainment":
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
@@ -140,7 +137,7 @@ const MainNewsComponent = () => {
             return (
               <div
                 key={index}
-                className="bg-white p-6 rounded-lg shadow-lg" // Removed animation classes here
+                className="bg-white p-6 rounded-lg shadow-lg"
               >
                 {imageUrl && (
                   <img
@@ -162,28 +159,38 @@ const MainNewsComponent = () => {
                   Read more
                 </a>
 
-                {/* Share View Section */}
-                <div className="mt-4">
-                  <textarea
-                    value={inputData[index]?.currentView || ""}
-                    onChange={(e) => handleInputChange(index, "currentView", e.target.value)}
-                    placeholder="Write your thoughts..."
-                    className="w-full p-2 border rounded-lg mt-2 bg-white text-black"
-                  ></textarea>
-                  <input
-                    type="text"
-                    value={inputData[index]?.currentHashtags || ""}
-                    onChange={(e) => handleInputChange(index, "currentHashtags", e.target.value)}
-                    placeholder="Add hashtags (e.g. #sports)"
-                    className="w-full p-2 border rounded-lg mt-2 bg-white text-black"
-                  />
-                </div>
+                {/* Share View Section Toggle Button */}
                 <button
-                  onClick={() => handleShareView(index)}
-                  className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+                  onClick={() => toggleShareViewVisibility(index)}
+                  className="mt-4 bg-blue-500 text-white mx-2 py-1 px-1 rounded-lg hover:bg-blue-700 text-sm"
                 >
                   Share Your Thoughts
                 </button>
+
+                {/* Share View Section */}
+                {activeShareViewIndex === index && (
+                  <div className="mt-4 bg-gray-100 p-4 rounded-lg shadow-md">
+                    <textarea
+                      value={inputData[index]?.currentView || ""}
+                      onChange={(e) => handleInputChange(index, "currentView", e.target.value)}
+                      placeholder="Write your thoughts..."
+                      className="textarea-field bg-gray-100 border-2 p-2 rounded-md border-black-900 border-solid"
+                    ></textarea>
+                    <input
+                      type="text"
+                      value={inputData[index]?.currentHashtags || ""}
+                      onChange={(e) => handleInputChange(index, "currentHashtags", e.target.value)}
+                      placeholder="Add hashtags (e.g. #sports)"
+                      className="input-field mt-2 bg-gray-100 bg-gray-100 border-2 p-2 rounded-md border-black-900 border-solid"
+                    />
+                    <button
+                      onClick={() => handleShareView(index)}
+                      className="mt-4 bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-700"
+                    >
+                      Post
+                    </button>
+                  </div>
+                )}
               </div>
             );
           })
@@ -192,15 +199,7 @@ const MainNewsComponent = () => {
         )}
       </div>
     );
-    default:
-        return (
-          <p className="text-gray-700 text-lg">
-            Select a category to view news.
-          </p>
-        );
-    }
   };
-  
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
