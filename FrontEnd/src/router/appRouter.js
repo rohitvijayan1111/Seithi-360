@@ -12,7 +12,8 @@ import QuizPage from "../pages/QuizPage";
 import QuizSection from "../pages/QuizSection";
 import LandingPage from "../components/LandingPage/LandingPage";
 import Personalization from "../components/Personalization/Personalization";
-import UserPostsPage from "../pages/UserPostsPage";
+import UserPostsPage from "../pages/UserPostsPage";import Community from "../components/Communities/Community";
+
 const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -35,8 +36,12 @@ const appRouter = createBrowserRouter([
         element: <LandingPage />,
       },
       {
-        path:"/yourfeed",
-        element:<Personalization />
+        path: "/yourfeed",
+        element: <Personalization />,
+      },
+      {
+        path: "/communities",
+        element: <Community />,
       },
       {
         path: "/personalized",
