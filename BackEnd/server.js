@@ -36,7 +36,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "1207",
+  password: "Rithik@28raja",
   database: "kynhood",
 });
 
@@ -320,6 +320,7 @@ app.post("/register", (req, res) => {
     languagePreference,
     dateOfBirth,
     district,
+    area
   } = req.body;
 
   // Hash the password using bcrypt
@@ -330,8 +331,8 @@ app.post("/register", (req, res) => {
 
     // Prepare data to be inserted into the database
     const query = `
-      INSERT INTO users (name, email, password, mobile, preferred_categories, language_preference, date_of_birth, district)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (name, email, password, mobile, preferred_categories, language_preference, date_of_birth, district, area)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     // Convert the preferredCategories array into a JSON string for storing
@@ -349,6 +350,7 @@ app.post("/register", (req, res) => {
         languagePreference,
         dateOfBirth,
         district,
+        area
       ],
       (err, result) => {
         if (err) {
@@ -402,6 +404,8 @@ app.post("/login", (req, res) => {
             preference: user.preferred_categories,
             languages: user.language_preference,
             district: user.district,
+            name: user.name,
+            email: user.email,
           });
       } else {
         res.status(400).json({ message: "Invalid email or password" });

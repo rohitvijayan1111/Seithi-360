@@ -27,6 +27,7 @@
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.16",
     "puppeteer": "^23.11.1",
+    "react-toastify": "^11.0.2",
     "whatsapp-web.js": "^1.26.0",
     "youtube-transcript-api": "^1.1.2"
   }
