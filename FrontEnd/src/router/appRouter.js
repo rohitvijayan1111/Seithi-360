@@ -12,7 +12,7 @@ import QuizPage from "../pages/QuizPage";
 import QuizSection from "../pages/QuizSection";
 import LandingPage from "../components/LandingPage/LandingPage";
 import Personalization from "../components/Personalization/Personalization";
-import Community from "../components/Communities/Community";
+import UserPostsPage from "../pages/UserPostsPage";import Community from "../components/Communities/Community";
 
 const appRouter = createBrowserRouter([
   {
@@ -55,14 +55,18 @@ const appRouter = createBrowserRouter([
         path: "/login",
         element: <RegistrationForm />,
       },
-      {
-        path: "/quiz",
-        element: <QuizPage />,
-      },
-      {
-        path: "/quizw",
-        element: <QuizSection />,
-      },
+	  {
+		path: "/quiz",
+		element: <QuizPage/>
+	  },
+	  {
+		path: "/quizw",
+		element: <QuizSection/>
+	  },
+	  {
+		path: "/post",
+		element: <UserPostsPage/>
+	  }
     ],
   },
 ]);
