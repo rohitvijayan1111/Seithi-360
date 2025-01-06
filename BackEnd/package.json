@@ -31,6 +31,7 @@
     "npm": "^11.0.0",
     "path": "^0.12.7",
     "puppeteer": "^23.11.1",
+    "react-toastify": "^11.0.2",
     "whatsapp-web.js": "^1.26.0",
     "youtube-transcript-api": "^1.1.2"
   }

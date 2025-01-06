@@ -13,6 +13,9 @@ import QuizSection from "../pages/QuizSection";
 import LandingPage from "../components/LandingPage/LandingPage";
 import Personalization from "../components/Personalization/Personalization";
 import UserPostsPage from "../pages/UserPostsPage";import Community from "../components/Communities/Community";
+import Shorts from "../components/Shorts Page/Shorts";
+import Profile from "../components/Profile/Profile";
+import AuthPage from "../components/Authenticatiion/Authentication";
 import NewsArticleForm from "../pages/NewsArticleForm";
 import FullArticle from "../pages/FullArticle";
 
@@ -50,12 +53,20 @@ const appRouter = createBrowserRouter([
         element: <PersonalizedPage />,
       },
       {
+        path: "/shorts",
+        element:<Shorts />
+      },
+      {
+        path:"/user-profile",
+        element:<Profile/>
+      },
+      {
         path: "*",
         element: <NotRouteFound />,
       },
       {
-        path: "/login",
-        element: <RegistrationForm />,
+        path: "/auth",
+        element: <AuthPage />,
       },
 	  {
 		path: "/quiz",

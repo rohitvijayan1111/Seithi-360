@@ -40,7 +40,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "1207",
+  password: "Rithik@28raja",
   database: "kynhood",
 });
 
@@ -237,58 +237,58 @@ app.get("/api/getUserPosts", async (req, res) => {
 
 
 
-app.post('/generate-quiz', async (req, res) => {
-  const { newsData } = req.body;
+// app.post('/generate-quiz', async (req, res) => {
+//   const { newsData } = req.body;
 
-  if (!newsData || !Array.isArray(newsData) || newsData.length === 0) {
-    return res.status(400).json({ error: 'News data is required and should be an array.' });
-  }
+//   if (!newsData || !Array.isArray(newsData) || newsData.length === 0) {
+//     return res.status(400).json({ error: 'News data is required and should be an array.' });
+//   }
 
-  try {
-    // Store all generated questions
-    const quiz = [];
+//   try {
+//     // Store all generated questions
+//     const quiz = [];
 
-    // Loop through each news article to generate a question
-    for (const article of newsData) {
-      const dataString = JSON.stringify(article, null, 2);
+//     // Loop through each news article to generate a question
+//     for (const article of newsData) {
+//       const dataString = JSON.stringify(article, null, 2);
 
-      // Generate question for each news article
-      const result = await geminiModel.generateContent(`
-       Based on the following news, create one multiple-choice question with 4 options. Make sure the question is relevant to the news provided. Here is the news to analyze:
+//       // Generate question for each news article
+//       const result = await geminiModel.generateContent(`
+//        Based on the following news, create one multiple-choice question with 4 options. Make sure the question is relevant to the news provided. Here is the news to analyze:
 
-        Format the response as:
-        1) According to the news, AI is primarily being used in healthcare for:
-        (a) Administrative tasks
-        (b) Diagnostics and treatment plans
-        (c) Patient education
-        (d) Drug discovery
-        Correct answer: (b)
+//         Format the response as:
+//         1) According to the news, AI is primarily being used in healthcare for:
+//         (a) Administrative tasks
+//         (b) Diagnostics and treatment plans
+//         (c) Patient education
+//         (d) Drug discovery
+//         Correct answer: (b)
         
-        the news need not to be in this context.
+//         the news need not to be in this context.
 
-        Data to Analyze:
-        ${dataString}
-      `);
+//         Data to Analyze:
+//         ${dataString}
+//       `);
 
-      console.log("Result received from Gemini API:", result);
+//       console.log("Result received from Gemini API:", result);
 
-      if (!result || !result.response || !result.response.text) {
-        return res.status(500).json({ error: 'Unable to generate quiz for some news.' });
-      }
+//       if (!result || !result.response || !result.response.text) {
+//         return res.status(500).json({ error: 'Unable to generate quiz for some news.' });
+//       }
 
-      const rawQuiz = await result.response.text();
-      console.log("Generated Quiz for this article:", rawQuiz);
+//       const rawQuiz = await result.response.text();
+//       console.log("Generated Quiz for this article:", rawQuiz);
 
-      const formattedQuiz = parseQuiz(rawQuiz); // Call parseQuiz to format the raw quiz text
-      quiz.push(formattedQuiz[0]); // Assuming each result is a single question
-    }
+//       const formattedQuiz = parseQuiz(rawQuiz); // Call parseQuiz to format the raw quiz text
+//       quiz.push(formattedQuiz[0]); // Assuming each result is a single question
+//     }
 
-    res.status(200).json({ quiz });
-  } catch (error) {
-    console.error('Error generating quiz:', error);
-    res.status(500).json({ error: 'An unexpected error occurred.' });
-  }
-});
+//     res.status(200).json({ quiz });
+//   } catch (error) {
+//     console.error('Error generating quiz:', error);
+//     res.status(500).json({ error: 'An unexpected error occurred.' });
+//   }
+// });
 
 
 // Function to fetch captions using Google APIs
@@ -388,6 +388,7 @@ app.post("/register", (req, res) => {
     languagePreference,
     dateOfBirth,
     district,
+    area
   } = req.body;
 
   // Hash the password using bcrypt
@@ -398,8 +399,8 @@ app.post("/register", (req, res) => {
 
     // Prepare data to be inserted into the database
     const query = `
-      INSERT INTO users (name, email, password, mobile, preferred_categories, language_preference, date_of_birth, district)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (name, email, password, mobile, preferred_categories, language_preference, date_of_birth, district, area)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     // Convert the preferredCategories array into a JSON string for storing
@@ -417,6 +418,7 @@ app.post("/register", (req, res) => {
         languagePreference,
         dateOfBirth,
         district,
+        area
       ],
       (err, result) => {
         if (err) {
@@ -470,6 +472,8 @@ app.post("/login", (req, res) => {
             preference: user.preferred_categories,
             languages: user.language_preference,
             district: user.district,
+            name: user.name,
+            email: user.email,
           });
       } else {
         res.status(400).json({ message: "Invalid email or password" });
@@ -966,6 +970,56 @@ cron.schedule('*/30 * * * *', async () => {
     console.log("Email sent successfully");
   } catch (error) {
     console.error("Error in cron job workflow:", error);
+  }
+});
+
+const fetchYouTubeVideos = async (query) => {
+  //const apiKey = 'AIzaSyC6ZbKJcjjJXv6l73-5Ij-rSS4oOQ_jn0s'; // Replace with your API key
+  const apiKey='AIzaSyBKDEl_EH5J98Z5HEYTPfruJ6JsEe56H-c';
+  const baseUrl = 'https://www.googleapis.com/youtube/v3/search';
+  try {
+    const response = await axios.get(baseUrl, {
+      params: {
+        part: 'snippet',
+        q: query,
+        type: 'video',
+        maxResults: 10,
+        key: apiKey,
+      },
+    });
+    console.log(response.data.items);
+
+    return response.data.items.map((item) => {
+      const thumbnails = item.snippet.thumbnails;
+      const thumbnailUrl = thumbnails.high?.url || thumbnails.medium?.url || thumbnails.default?.url; // Fallback logic
+
+      return {
+        title: item.snippet.title,
+        description: item.snippet.description,
+        videoId: item.id.videoId,
+        url: 'https://www.youtube.com/watch?v=' + item.id.videoId,
+        thumbnail: thumbnailUrl, // Set the URL based on available resolution
+        pubDate:item.snippet.publishTime
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching YouTube videos:', error);
+    return [];
+  }
+};
+
+app.get('/youtube-videos', async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).json({ error: 'Query parameter is required' });
+  }
+
+  try {
+    const videos = await fetchYouTubeVideos(query);
+    res.status(200).json({ success: true, videos });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 

@@ -37,12 +37,8 @@ export default function HeroSection() {
         >
           <div className="flex lg:flex-1">
             <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
-              <img
-                alt=""
-                src="https://cdn-icons-png.flaticon.com/128/11922/11922419.png"
-                className="h-8 w-auto"
-              />
+              <span className="sr-only">Seithi360</span>
+              <img alt="" src="seithi360-logo-bg.png" className="h-8 w-auto" />
             </a>
           </div>
           <div className="flex lg:hidden">
@@ -67,7 +63,7 @@ export default function HeroSection() {
             ))}
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <a href="#" className="text-sm/6 font-semibold text-gray-900">
+            <a href="/auth" className="text-sm/6 font-semibold text-gray-900">
               Log in <span aria-hidden="true">&rarr;</span>
             </a>
           </div>
@@ -84,7 +80,7 @@ export default function HeroSection() {
                 <span className="sr-only">Your Company</span>
                 <img
                   alt=""
-                  src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
+                  src="seithi360-logo-bg.png"
                   className="h-8 w-auto"
                 />
               </a>
@@ -141,33 +137,48 @@ export default function HeroSection() {
           initial="hidden"
           animate="visible"
           variants={staggerContainer}
-          className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56"
+          className="mx-auto max-w-7xl py-32 sm:py-48 lg:py-56"
         >
-          <motion.h1
-            variants={fadeInUp}
-            className="text-balance text-5xl font-semibold tracking-tight text-gray-900 sm:text-7xl"
-          >
-            செய்தி360
-          </motion.h1>
-          <motion.p
-            variants={fadeInUp}
-            className="mt-8 text-pretty text-lg font-medium text-gray-500 sm:text-xl/8"
-          >
-            Seithi360 is a feature-rich news aggregator designed to empower
-            communities by curating accurate, personalized news from verified
-            sources.
-          </motion.p>
+          <div className="flex flex-col lg:flex-row items-center justify-between space-y-6 lg:space-y-0">
+            {/* Logo Section */}
+            <motion.img
+              src="seithi360-logo-bg.png"
+              variants={fadeInUp}
+              className="h-25 w-25 sm:h-20 md:h-24 lg:h-28 " // Responsive logo size
+              alt="Seithi360"
+            />
+
+            {/* Title and Description */}
+            <div className="text-center lg:text-left">
+              <motion.h1
+                variants={fadeInUp}
+                className="text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl md:text-6xl lg:text-7xl"
+              >
+                செய்தி360
+              </motion.h1>
+              <motion.p
+                variants={fadeInUp}
+                className="mt-4 text-pretty text-lg font-medium text-gray-500 sm:text-xl"
+              >
+                Seithi360 is a feature-rich news aggregator designed to empower
+                communities by curating accurate, personalized news from
+                verified sources.
+              </motion.p>
+            </div>
+          </div>
+
+          {/* Buttons */}
           <motion.div
             variants={fadeInUp}
             className="mt-10 flex items-center justify-center gap-x-6"
           >
             <a
-              href="#"
+              href="/auth"
               className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Get started
             </a>
-            <a href="#" className="text-sm/6 font-semibold text-gray-900">
+            <a href="/auth" className="text-sm font-semibold text-gray-900">
               Learn more <span aria-hidden="true">→</span>
             </a>
           </motion.div>

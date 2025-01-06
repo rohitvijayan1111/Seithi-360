@@ -52,43 +52,85 @@ export default function Feature() {
               icon: FaDatabase,
               title: "Custom Built API",
               color: "indigo-500",
+              description:
+                "Create and integrate custom APIs that bring the latest news from reliable sources directly into your platform.",
             },
             {
               icon: FaGlobe,
               title: "Web Scraping from Verified Sources",
               color: "green-500",
+              description:
+                "Gather real-time data from credible, verified news websites to ensure the most up-to-date coverage.",
             },
             {
               icon: FaEnvelope,
               title: "News Article Mail Notifications",
               color: "blue-500",
+              description:
+                "Subscribe to receive daily or weekly email notifications about the latest trending news articles.",
             },
             {
               icon: FaUserCheck,
               title: "Personalized News",
               color: "purple-500",
+              description:
+                "Get news tailored to your preferences, based on your reading habits and interests.",
             },
             {
               icon: FaMapMarkerAlt,
               title: "Local News Scraping",
               color: "red-500",
+              description:
+                "Receive news updates based on your location. Stay informed about what's happening near you.",
             },
             {
               icon: FaCheckCircle,
               title: "Verified News Submission",
               color: "teal-500",
+              description:
+                "Submit news articles that are fact-checked and verified to ensure they meet quality standards.",
             },
-            { icon: FaMagic, title: "Fact-Checked Badge", color: "yellow-500" },
-            { icon: FaNewspaper, title: "News Summaries", color: "indigo-400" },
+            {
+              icon: FaMagic,
+              title: "Fact-Checked Badge",
+              color: "yellow-500",
+              description:
+                "News articles with a 'Fact-Checked' badge are verified for accuracy and reliability.",
+            },
+            {
+              icon: FaNewspaper,
+              title: "News Summaries",
+              color: "indigo-400",
+              description:
+                "Summarized versions of news stories, so you can stay informed without spending too much time reading.",
+            },
             {
               icon: FaComments,
               title: "Discussion Section",
               color: "pink-500",
+              description:
+                "Engage with others through comments and discussions to share opinions and perspectives on news stories.",
             },
             {
               icon: FaRegCalendarAlt,
               title: "Local Events Scraping",
               color: "orange-500",
+              description:
+                "Stay informed about local events and activities happening in your area with real-time scraping.",
+            },
+            {
+              icon: FaGlobe,
+              title: "Local Communities",
+              color: "green-600",
+              description:
+                "Join and interact with your local community. Share news, events, and information relevant to your city.",
+            },
+            {
+              icon: FaNewspaper,
+              title: "Shorts",
+              color: "red-600",
+              description:
+                "Quick, bite-sized news updates designed for readers who want fast information in a short format.",
             },
           ].map((feature, index) => (
             <motion.div
@@ -103,10 +145,7 @@ export default function Feature() {
               <h3 className="text-xl font-semibold text-gray-800">
                 {feature.title}
               </h3>
-              <p className="mt-4 text-gray-600">
-                {feature.description ||
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
-              </p>
+              <p className="mt-4 text-gray-600">{feature.description}</p>
             </motion.div>
           ))}
         </div>
