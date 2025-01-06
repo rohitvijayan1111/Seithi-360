@@ -3,6 +3,7 @@ import SidebarP from "./utils/SideBarP";
 import Example from "../Feed/Header/Header";
 import axios from "axios";
 
+
 const TrendingNews = () => {
   const [trendingNews, setTrendingNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -176,8 +177,256 @@ const Top10News = () => {
     </div>
   );
 };
+
+
+
+
+
+const SkeletonLoader = () => {
+  return (
+    <div className="p-4">
+      <div className="bg-gray-200 rounded-lg shadow-md h-48 animate-pulse"></div>
+      <div className="p-4">
+        <div className="bg-gray-200 h-6 rounded mb-2 animate-pulse"></div>
+        <div className="bg-gray-200 h-4 rounded mb-2 animate-pulse"></div>
+        <div className="bg-gray-200 h-4 rounded mb-2 animate-pulse"></div>
+      </div>
+    </div>
+  );
+};
+const ArticleCard = ({ article }) => (
+  <div className="p-4">
+    <div className="bg-white rounded-lg shadow-md hover:shadow-xl overflow-hidden transition-shadow duration-300">
+      <img 
+        src={article.imageUrl} 
+        alt={article.title} 
+        className="w-full h-48 object-cover" 
+      />
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          {article.title}
+        </h3>
+        <p className="text-sm text-gray-600 line-clamp-2">
+          {article.description}
+        </p>
+        <a 
+          href={article.url} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-blue-500 hover:underline text-sm mt-2 block"
+        >
+          Read More
+        </a>
+      </div>
+    </div>
+  </div>
+);
+const OthersContent = () => {
+  const [districts, setDistricts] = useState([
+    "Ariyalur",
+    "Chengalpattu",
+    "Chennai",
+    "Coimbatore",
+    "Cuddalore",
+    "Dharmapuri",
+    "Dindigul",
+    "Erode",
+    "Kallakurichi",
+    "Kanchipuram",
+    "Kanyakumari",
+    "Karur",
+    "Krishnagiri",
+    "Madurai",
+    "Nagapattinam",
+    "Namakkal",
+    "Nilgiris",
+    "Perambalur",
+    "Pudukkottai",
+    "Ramanathapuram",
+    "Ranipet",
+    "Salem",
+    "Sivagangai",
+    "Tenkasi",
+    "Thanjavur",
+    "Theni",
+    "Thoothukudi (Tuticorin)",
+    "Tiruchirappalli (Trichy)",
+    "Tirunelveli",
+    "Tirupattur",
+    "Tiruppur",
+    "Tiruvallur",
+    "Tiruvannamalai",
+    "Tiruvarur",
+    "Vellore",
+    "Viluppuram",
+    "Virudhunagar",
+  ]);
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [areaArticles, setAreaArticles] = useState([]);
+  const [districtNews, setDistrictNews] = useState([]);
+  const [areaLoading, setAreaLoading] = useState(false);
+  const [districtLoading, setDistrictLoading] = useState(false);
+
+  const formatArticles = (articles) => 
+    articles.map((article) => ({
+      title: article.title,
+      description: article.source || "No description available",
+      imageUrl: article.imgSrc || "https://via.placeholder.com/300x200",
+      url: article.url,
+    }));
+
+  const fetchAreaArticles = async () => {
+    try {
+      setAreaLoading(true);
+      const area = sessionStorage.getItem("areaNews") || "Thiruvanmiyur News";
+      const response = await axios.get("http://localhost:5000/scrape3", {
+        params: { q: area },
+      });
+      const articles = formatArticles(response.data.articles || []);
+      setAreaArticles(articles);
+      setAreaLoading(false);
+    } catch (error) {
+      console.error("Error fetching area articles:", error);
+      setAreaLoading(false);
+      setAreaArticles([]);
+    }
+  };
+
+  const fetchDistrictArticles = async (district) => {
+    try {
+      setDistrictLoading(true);
+      const response = await axios.get("http://localhost:5000/scrape3", {
+        params: { q: district },
+      });
+      const articles = formatArticles(response.data.articles || []);
+      setDistrictNews(articles);
+      setDistrictLoading(false);
+    } catch (error) {
+      console.error("Error fetching district articles:", error);
+      setDistrictLoading(false);
+      setDistrictNews([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchAreaArticles();
+  }, []);
+
+  const handleDistrictChange = (event) => {
+    const district = event.target.value;
+    setSelectedDistrict(district);
+    if (district) {
+      fetchDistrictArticles(district);
+    } else {
+      setDistrictNews([]);
+    }
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchTerm) {
+      fetchDistrictArticles(searchTerm);
+    }
+  };
+
+  return (
+    <div className="text-lg text-yellow-600">
+      <h2 className="text-2xl font-bold mb-4">What's Happening in Your Area?</h2>
+      
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold mb-2">News from Local People</h3>
+        <p className="text-sm text-gray-600 mb-4">
+          Stay updated with the latest happenings shared by local residents.
+        </p>
+        
+        {areaLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, index) => (
+              <SkeletonLoader key={index} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {areaArticles.map((article, index) => (
+              <ArticleCard key={index} article={article} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="mb-6">
+        <label htmlFor="district" className="block mb-2 font-semibold">Select District:</label>
+        <select
+          id="district"
+          value={selectedDistrict}
+          onChange={handleDistrictChange}
+          className="border border-gray-300 rounded p-2 w-full"
+        >
+          <option value="">Select a district</option>
+          {districts.map((district, index) => (
+            <option key={index} value={district}>
+              {district}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="mb-6">
+        <label htmlFor="search" className="block mb-2 font-semibold">Search for Happenings:</label>
+        <div className="flex items-center">
+          <div className="relative w-full md:w-1/2">
+            <input
+              type="text"
+              id="search"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              placeholder="Search by location or keyword"
+              className="border border-gray-300 rounded-l p-2 w-full pl-4 pr-10 text-sm"
+            />
+            <button
+                onClick={handleSearchSubmit}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              >
+                🔍
+              </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold mb-2">
+          {selectedDistrict ? `${selectedDistrict} News` : 'Search Results'}
+        </h3>
+        
+        {districtLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, index) => (
+              <SkeletonLoader key={index} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {districtNews. length > 0 ? (
+              districtNews.map((article, index) => (
+                <ArticleCard key={index} article={article} />
+              ))
+            ) : (
+              <p>No articles found.</p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
 const Personalization = () => {
-  const [content, setContent] = useState("welcome");
+  const [content, setContent] = useState("welcome ");
   const [loadedSections, setLoadedSections] = useState({});
   const [sectionData, setSectionData] = useState({});
   const observerRef = useRef(null);
@@ -600,12 +849,7 @@ const Personalization = () => {
       case "top-10":
         return <Top10News />
       case "others":
-        return (
-          <div className="text-lg text-yellow-600">
-            <h2 className="text-2xl font-bold mb-4">Other Content</h2>
-            <p>Check out more exciting topics and updates!</p>
-          </div>
-        );
+        return <OthersContent/>
       case "my-interest":
         return renderMyInterestContent();
       default:
