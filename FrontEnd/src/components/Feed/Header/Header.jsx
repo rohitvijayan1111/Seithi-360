@@ -11,6 +11,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { current } from "@reduxjs/toolkit";
 import axios from "axios";
 import { useEffect,useState } from "react";
+import GoogleTranslate from "../../GoogleTranslate";
 const user = {
   name: "Tom Cook",
   email: "tom@example.com",
@@ -124,9 +125,10 @@ export default function Example() {
                     {item.name}
                   </a>
                 ))}
+                
               </div>
             </div>
-
+ 
             {/* Search Bar, Profile, and Notification Icons */}
             <div className="flex items-center space-x-6">
               {/* Search Bar (Visible on all screen sizes) */}
@@ -170,6 +172,7 @@ export default function Example() {
                       </a>
                     </MenuItem>
                   ))}
+                  <GoogleTranslate/>
                 </MenuItems>
               </Menu>
             </div>

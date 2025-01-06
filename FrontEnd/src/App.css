@@ -1,0 +1,23 @@
+.VIpgJd-ZVi9od-l4eHX-hSRGPd{
+    display: none !important;
+  }
+  .VIpgJd-ZVi9od-ORHb-OEVmcd skiptranslate{
+      color: transparent;
+  }
+  
+  .goog-te-menu-frame {
+    display: none !important; /* Ensures the translation dropdown is hidden */
+  }
+  
+  body .goog-tooltip {
+    display: none !important; /* Hides the tooltip */
+  }
+  
+  body .goog-tooltip:hover {
+    display: none !important; /* Ensures the tooltip stays hidden on hover */
+  }
+  
+  body .goog-te-banner-frame {
+    display: none !important; /* Hides the Google Translate banner if it appears */
+  }
+  
