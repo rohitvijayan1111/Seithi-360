@@ -12,6 +12,7 @@ import QuizPage from "../pages/QuizPage";
 import QuizSection from "../pages/QuizSection";
 import LandingPage from "../components/LandingPage/LandingPage";
 import Personalization from "../components/Personalization/Personalization";
+import Community from "../components/Communities/Community";
 
 const appRouter = createBrowserRouter([
   {
@@ -35,8 +36,12 @@ const appRouter = createBrowserRouter([
         element: <LandingPage />,
       },
       {
-        path:"/yourfeed",
-        element:<Personalization />
+        path: "/yourfeed",
+        element: <Personalization />,
+      },
+      {
+        path: "/communities",
+        element: <Community />,
       },
       {
         path: "/personalized",
@@ -50,14 +55,14 @@ const appRouter = createBrowserRouter([
         path: "/login",
         element: <RegistrationForm />,
       },
-	  {
-		path: "/quiz",
-		element: <QuizPage/>
-	  },
-	  {
-		path: "/quizw",
-		element: <QuizSection/>
-	  }
+      {
+        path: "/quiz",
+        element: <QuizPage />,
+      },
+      {
+        path: "/quizw",
+        element: <QuizSection />,
+      },
     ],
   },
 ]);
