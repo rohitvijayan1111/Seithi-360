@@ -8,7 +8,9 @@ import {
   MenuItems,
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-
+import { current } from "@reduxjs/toolkit";
+import axios from "axios";
+import { useEffect,useState } from "react";
 const user = {
   name: "Tom Cook",
   email: "tom@example.com",
@@ -16,7 +18,7 @@ const user = {
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 };
 
-const navigation = [{ name: "Your News", href: "#", current: false }];
+const navigation = [{name:"Home",href:"/home",current:false},{ name: "Your News", href: "/yourfeed", current: false }];
 
 const userNavigation = [
   { name: "Your Profile", href: "#" },
@@ -29,6 +31,57 @@ function classNames(...classes) {
 }
 
 export default function Example() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const fetchScrapedArticles = async (query) => {
+    try {
+      const response = await axios.get("http://localhost:5000/scrape3", {
+        params: { q: query || "Trending News" },
+      });
+      return response.data.articles || [];
+    } catch (error) {
+      console.error("Error fetching scraped articles:", error);
+      return [];
+    }
+  };
+   
+       const loadLocalNews = async () => {
+    // Immediately show the popup and start loading
+    setShowResults(true);
+    setLoading(true);
+
+    try {
+      const query = searchQuery ? `${searchQuery}` : "Trending News";
+      const articles = await fetchScrapedArticles(query);
+
+      // Transform articles into the required format
+      const formattedArticles = articles.map((article) => ({
+        title: article.title,
+        description: article.source || "No description available",
+        imageUrl: article.imgSrc || "https://via.placeholder.com/300x200",
+        url: article.url,
+      }));
+
+      setSearchResults(formattedArticles);
+    } catch (error) {
+      console.error("Error loading news:", error);
+      // Optionally set an error state
+    } finally {
+      // Stop loading regardless of success or failure
+      setLoading(false);
+    }
+  };
+     
+   
+  const handleSearch = async (event) => {
+    if (event.key === "Enter" || event.type === "click") {
+      await loadLocalNews();
+    }
+  };
+
   return (
     <div className="min-h-full">
       <Disclosure as="nav" className="bg-white shadow-md">
@@ -67,23 +120,23 @@ export default function Example() {
             {/* Search Bar, Profile, and Notification Icons */}
             <div className="flex items-center space-x-6">
               {/* Search Bar (Visible on all screen sizes) */}
-              <div className="relative w-full max-w-xs sm:max-w-sm md:w-64">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="w-full p-2 rounded-lg bg-gray-100 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white"
-                />
-                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                  🔍
-                </span>
-              </div>
-
+               {/* Search */}
+            <div className="relative w-full max-w-xs sm:max-w-sm md:w-64">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearch}
+                className="w-full p-2 rounded-lg bg-gray-100 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
               <button
-                type="button"
-                className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white"
+                onClick={handleSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
               >
-                <BellIcon aria-hidden="true" className="w-6 h-6" />
+                🔍
               </button>
+            </div>
 
               {/* Profile dropdown */}
               <Menu as="div" className="relative ml-3">
@@ -193,6 +246,64 @@ export default function Example() {
           </div>
         </DisclosurePanel>
       </Disclosure>
+        {/* Pop-Up Results */}
+        {showResults && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] p-6 overflow-y-auto">
+      <button
+        onClick={() => {
+          setShowResults(false);
+          setLoading(false);
+        }}
+        className="absolute top-4 right-4 text-gray-500 hover:text-gray-900"
+      >
+        ✖
+      </button>
+      <h2 className="text-lg font-bold mb-4 text-black">Search Results</h2>
+      
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {searchResults.length > 0 ? (
+            searchResults.map((news, index) => (
+              <div key={index} className="bg-gray-100 p-4 rounded-md hover:bg-gray-200 transition duration-200">
+                <img
+                  src={news.imageUrl}
+                  alt={news.title}
+                  className="w-full h-60 object-cover rounded-md"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://via.placeholder.com/300x200";
+                  }}
+                />
+                <h3 className="text-md font-semibold mt-2 text-black">{news.title}</h3>
+                <p className="text-sm text-black line-clamp-2">
+                  {news.description}
+                </p>
+                <a
+                  href={news.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-500 hover:text-indigo-700 hover:underline text-sm mt-2 block"
+                >
+                  Read More
+                </a>
+              </div>
+            ))
+          ) : (
+            <div className="text-center text-black">
+              No results found
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

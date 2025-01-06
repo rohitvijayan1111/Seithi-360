@@ -11,35 +11,6 @@ const puppeteer = require("puppeteer");
 const nodemailer = require("nodemailer");
 const cron = require("node-cron");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-require('dotenv').config();
-const router = express.Router();
-
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-
-// MySQL Database Connection
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "1207",
-  database: "kynhood",
-});
-
-// Connect to the database
-db.connect((err) => {
-  if (err) {
-    console.error("Error connecting to the database:", err);
-  } else {
-    console.log("Connected to MySQL database");
-  }
-});
-
-const GEMINI_API_KEY = "AIzaSyAdFW-tfACDH3xlRiB2TFir0RZpm9-RxCc"; 
-const GEMINI_API_URL = "https://gemini.googleapis.com/v1beta1/summarizeText";
-const API_KEY = "AIzaSyA82SaGxS6_wXEffifV_QSopjWrk0EPJlA";
-
-
 const geminiApiKey = "AIzaSyAdFW-tfACDH3xlRiB2TFir0RZpm9-RxCc";
 const googleAI = new GoogleGenerativeAI(geminiApiKey);
 
@@ -53,6 +24,29 @@ const geminiConfig = {
 const geminiModel = googleAI.getGenerativeModel({
   model: "gemini-pro",
   geminiConfig,
+});
+
+
+
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+
+// MySQL Database Connection
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "pass123",
+  database: "kynhood",
+});
+
+// Connect to the database
+db.connect((err) => {
+  if (err) {
+    console.error("Error connecting to the database:", err);
+  } else {
+    console.log("Connected to MySQL database");
+  }
 });
 
 function parseQuiz(rawQuiz) {
@@ -802,6 +796,36 @@ async function sendEmail(recipient, subject, htmlContent) {
     }
   }
 }
+
+app.post('/summarize-news', async (req, res) => {
+  const { newsData } = req.body;
+
+  if (!newsData) {
+    return res.status(400).json({ error: 'News data is required.' });
+  }
+
+  try {
+    const result = await geminiModel.generateContent(`
+      Summarize the following news data into a concise paragraph for each category. Focus on the key highlights for each category.
+
+      Data to Analyze:
+      ${newsData}
+    `);
+
+    console.log("Result received from Gemini API:", result);
+
+    if (!result || !result.response || !result.response.text) {
+      return res.status(500).json({ error: 'Unable to generate summary.' });
+    }
+
+    const summary = await result.response.text();
+    res.status(200).json({ summary });
+  } catch (error) {
+    console.error('Error generating summary:', error);
+    res.status(500).json({ error: 'An unexpected error occurred.' });
+  }
+});
+
 
 // Main Workflow
 cron.schedule('*/30 * * * *', async () => {

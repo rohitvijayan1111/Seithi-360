@@ -30,9 +30,11 @@
     "react-scripts": "5.0.1",
     "react-slick": "^0.30.3",
     "react-spinners": "^0.15.0",
+    "safe-buffer": "^5.2.1",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.12",
     "timers": "^0.1.1",
+    "timers-browserify": "^2.0.12",
     "web-vitals": "^2.1.4",
     "xml2js": "^0.6.2"
   },

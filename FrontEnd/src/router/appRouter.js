@@ -10,8 +10,9 @@ import Landingpage from "../components/LandingPage/LandingPage";
 import Feed from "../components/Feed/Feed";
 import QuizPage from "../pages/QuizPage";
 import QuizSection from "../pages/QuizSection";
+import LandingPage from "../components/LandingPage/LandingPage";
+import Personalization from "../components/Personalization/Personalization";
 import UserPostsPage from "../pages/UserPostsPage";
-
 const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -28,6 +29,14 @@ const appRouter = createBrowserRouter([
       {
         path: "/phome",
         element: <PHomePage />,
+      },
+      {
+        path: "/seithi360",
+        element: <LandingPage />,
+      },
+      {
+        path:"/yourfeed",
+        element:<Personalization />
       },
       {
         path: "/personalized",

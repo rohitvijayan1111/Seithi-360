@@ -15,7 +15,7 @@ const categories = [
 const categoryFeedUrls = {
   General: "https://rss.app/feeds/D4WOO7MkrKgg1TwF.xml",
   Sports: "https://rss.app/feeds/SXgRLLL6qAQEQRJ6.xml",
-  Technology: "https://rss.app/feeds/zciHKszsHyt8CgnE.xml",
+  Technology: "https://rss.app/feeds/zciHKszsHyt8CgnE.xml",  
   Politics: "https://rss.app/feeds/JHRIb44ZGKHhLNDz.xml",
   Business: "https://rss.app/feeds/VAnnNyKqS5MgoLpF.xml",
   Entertainment: "https://rss.app/feeds/3SSCaYfwjpRPmiDZ.xml",
@@ -112,6 +112,13 @@ const MainNewsComponent = () => {
   };
 
   const renderCategoryContent = () => {
+    switch (activeCategory) {
+      case "General":
+      case "Sports":
+      case "Technology":
+      case "Politics":
+      case "Business":
+      case "Entertainment":
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
@@ -185,7 +192,15 @@ const MainNewsComponent = () => {
         )}
       </div>
     );
+    default:
+        return (
+          <p className="text-gray-700 text-lg">
+            Select a category to view news.
+          </p>
+        );
+    }
   };
+  
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
