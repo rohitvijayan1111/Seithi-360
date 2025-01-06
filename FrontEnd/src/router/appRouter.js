@@ -12,7 +12,7 @@ import QuizPage from "../pages/QuizPage";
 import QuizSection from "../pages/QuizSection";
 import LandingPage from "../components/LandingPage/LandingPage";
 import Personalization from "../components/Personalization/Personalization";
-
+import UserPostsPage from "../pages/UserPostsPage";
 const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -57,6 +57,10 @@ const appRouter = createBrowserRouter([
 	  {
 		path: "/quizw",
 		element: <QuizSection/>
+	  },
+	  {
+		path: "/post",
+		element: <UserPostsPage/>
 	  }
     ],
   },

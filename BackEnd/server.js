@@ -87,6 +87,31 @@ function parseQuiz(rawQuiz) {
 }
 
 
+app.post('/api/shareview', (req, res) => {
+  const { username, thoughts, hashtags, image_url, title, link } = req.body;
+
+  const query = `INSERT INTO ShareViews (username, thoughts, hashtags, image_url, title, link) VALUES (?, ?, ?, ?, ?, ?)`;
+
+  db.execute(query, [username, thoughts, hashtags, image_url, title, link], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error saving share view' });
+    }
+    res.status(200).json({ message: 'Share view saved successfully' });
+  });
+});
+
+app.get("/api/getUserPosts", async (req, res) => {
+  try {
+    const query = "SELECT * FROM ShareViews ORDER BY created_at DESC";
+    const [results] = await db.promise().query(query); // Enable promises for this query
+    res.json(results);
+  } catch (error) {
+    console.error("Error fetching posts", error);
+    res.status(500).send("Error fetching posts");
+  }
+});
+
 
 
 app.post('/generate-quiz', async (req, res) => {
