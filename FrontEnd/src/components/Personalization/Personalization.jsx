@@ -3,6 +3,7 @@ import SidebarP from "./utils/SideBarP";
 import Example from "../Feed/Header/Header";
 import axios from "axios";
 
+
 const TrendingNews = () => {
   const [trendingNews, setTrendingNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -176,8 +177,335 @@ const Top10News = () => {
     </div>
   );
 };
+
+
+const Worldnews = () => {
+  const [topNews, setTopNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTop10News = async () => {
+      try {
+        const response = await fetch(
+          "https://rss.app/feeds/v1.1/yzTEoaJ4BR08AUsb.json"
+        );
+        const data = await response.json();
+        const items = data.items.map((item) => ({
+          title: item.title,
+          description: item.content_text || "No description available",
+          imageUrl: item.image || "https://via.placeholder.com/300x200",
+          url: item.url,
+          pubDate: item.date_published,
+        }));
+        setTopNews(items);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch news:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchTop10News();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4 mx-auto"></div>
+          <p className="text-gray-600">Loading World News...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-lg text-red-600">
+      <h2 className="text-2xl font-bold mb-4">World News</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {topNews.map((news, newsIndex) => (
+          <div key={newsIndex} className="p-4">
+            <div className="bg-white rounded-lg shadow-md hover:shadow-xl overflow-hidden transition-shadow duration-300">
+              <img
+                src={news.imageUrl}
+                alt={news.title}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+                  {news.title}
+                </h3>
+                <p className="text-sm text-gray-600 line-clamp-2">
+                  {news.description}
+                </p>
+                <div className="flex justify-between items-center mt-2">
+                  <a
+                    href={news.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline text-sm"
+                  >
+                    Read More
+                  </a>
+                  <span className="text-xs text-gray-500">
+                    {new Date(news.pubDate).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
+const SkeletonLoader = () => {
+  return (
+    <div className="p-4">
+      <div className="bg-gray-200 rounded-lg shadow-md h-48 animate-pulse"></div>
+      <div className="p-4">
+        <div className="bg-gray-200 h-6 rounded mb-2 animate-pulse"></div>
+        <div className="bg-gray-200 h-4 rounded mb-2 animate-pulse"></div>
+        <div className="bg-gray-200 h-4 rounded mb-2 animate-pulse"></div>
+      </div>
+    </div>
+  );
+};
+const ArticleCard = ({ article }) => (
+  <div className="p-4">
+    <div className="bg-white rounded-lg shadow-md hover:shadow-xl overflow-hidden transition-shadow duration-300">
+      <img 
+        src={article.imageUrl} 
+        alt={article.title} 
+        className="w-full h-48 object-cover" 
+      />
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          {article.title}
+        </h3>
+        <p className="text-sm text-gray-600 line-clamp-2">
+          {article.description}
+        </p>
+        <a 
+          href={article.url} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-blue-500 hover:underline text-sm mt-2 block"
+        >
+          Read More
+        </a>
+      </div>
+    </div>
+  </div>
+);
+const OthersContent = () => {
+  const [districts, setDistricts] = useState([
+    "Ariyalur",
+    "Chengalpattu",
+    "Chennai",
+    "Coimbatore",
+    "Cuddalore",
+    "Dharmapuri",
+    "Dindigul",
+    "Erode",
+    "Kallakurichi",
+    "Kanchipuram",
+    "Kanyakumari",
+    "Karur",
+    "Krishnagiri",
+    "Madurai",
+    "Nagapattinam",
+    "Namakkal",
+    "Nilgiris",
+    "Perambalur",
+    "Pudukkottai",
+    "Ramanathapuram",
+    "Ranipet",
+    "Salem",
+    "Sivagangai",
+    "Tenkasi",
+    "Thanjavur",
+    "Theni",
+    "Thoothukudi (Tuticorin)",
+    "Tiruchirappalli (Trichy)",
+    "Tirunelveli",
+    "Tirupattur",
+    "Tiruppur",
+    "Tiruvallur",
+    "Tiruvannamalai",
+    "Tiruvarur",
+    "Vellore",
+    "Viluppuram",
+    "Virudhunagar",
+  ]);
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [areaArticles, setAreaArticles] = useState([]);
+  const [districtNews, setDistrictNews] = useState([]);
+  const [areaLoading, setAreaLoading] = useState(false);
+  const [districtLoading, setDistrictLoading] = useState(false);
+
+  const formatArticles = (articles) => 
+    articles.map((article) => ({
+      title: article.title,
+      description: article.source || "No description available",
+      imageUrl: article.imgSrc || "https://via.placeholder.com/300x200",
+      url: article.url,
+    }));
+
+  const fetchAreaArticles = async () => {
+    try {
+      setAreaLoading(true);
+      const area = sessionStorage.getItem("areaNews") || "Thiruvanmiyur News";
+      const response = await axios.get("http://localhost:5000/scrape3", {
+        params: { q: area },
+      });
+      const articles = formatArticles(response.data.articles || []);
+      setAreaArticles(articles);
+      setAreaLoading(false);
+    } catch (error) {
+      console.error("Error fetching area articles:", error);
+      setAreaLoading(false);
+      setAreaArticles([]);
+    }
+  };
+
+  const fetchDistrictArticles = async (district) => {
+    try {
+      setDistrictLoading(true);
+      const response = await axios.get("http://localhost:5000/scrape3", {
+        params: { q: district },
+      });
+      const articles = formatArticles(response.data.articles || []);
+      setDistrictNews(articles);
+      setDistrictLoading(false);
+    } catch (error) {
+      console.error("Error fetching district articles:", error);
+      setDistrictLoading(false);
+      setDistrictNews([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchAreaArticles();
+  }, []);
+
+  const handleDistrictChange = (event) => {
+    const district = event.target.value;
+    setSelectedDistrict(district);
+    if (district) {
+      fetchDistrictArticles(district);
+    } else {
+      setDistrictNews([]);
+    }
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchTerm) {
+      fetchDistrictArticles(searchTerm);
+    }
+  };
+
+  return (
+    <div className="text-lg text-yellow-600">
+      <h2 className="text-2xl font-bold mb-4">What's Happening in Your Area?</h2>
+      
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold mb-2">News from Local People</h3>
+        <p className="text-sm text-gray-600 mb-4">
+          Stay updated with the latest happenings shared by local residents.
+        </p>
+        
+        {areaLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, index) => (
+              <SkeletonLoader key={index} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {areaArticles.map((article, index) => (
+              <ArticleCard key={index} article={article} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="mb-6">
+        <label htmlFor="district" className="block mb-2 font-semibold">Select District:</label>
+        <select
+          id="district"
+          value={selectedDistrict}
+          onChange={handleDistrictChange}
+          className="border border-gray-300 rounded p-2 w-full"
+        >
+          <option value="">Select a district</option>
+          {districts.map((district, index) => (
+            <option key={index} value={district}>
+              {district}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="mb-6">
+        <label htmlFor="search" className="block mb-2 font-semibold">Search for Happenings:</label>
+        <div className="flex items-center">
+          <div className="relative w-full md:w-1/2">
+            <input
+              type="text"
+              id="search"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              placeholder="Search by location or keyword"
+              className="border border-gray-300 rounded-l p-2 w-full pl-4 pr-10 text-sm"
+            />
+            <button
+                onClick={handleSearchSubmit}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              >
+                🔍
+              </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold mb-2">
+          {selectedDistrict ? `${selectedDistrict} News` : 'Search Results'}
+        </h3>
+        
+        {districtLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, index) => (
+              <SkeletonLoader key={index} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {districtNews. length > 0 ? (
+              districtNews.map((article, index) => (
+                <ArticleCard key={index} article={article} />
+              ))
+            ) : (
+              <p>No articles found.</p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
 const Personalization = () => {
-  const [content, setContent] = useState("welcome");
+  const [content, setContent] = useState("welcome ");
   const [loadedSections, setLoadedSections] = useState({});
   const [sectionData, setSectionData] = useState({});
   const observerRef = useRef(null);
@@ -590,22 +918,12 @@ const Personalization = () => {
     switch (content) {
       case "youtube-news":
         return renderYouTubeSections();
-      case "influencers":
-        return (
-          <div className="text-lg text-green-600">
-            <h2 className="text-2xl font-bold mb-4">Influencers</h2>
-            <p>Discover popular influencers and their stories!</p>
-          </div>
-        );
+      case "worldnews":
+        return <Worldnews/>
       case "top-10":
         return <Top10News />
       case "others":
-        return (
-          <div className="text-lg text-yellow-600">
-            <h2 className="text-2xl font-bold mb-4">Other Content</h2>
-            <p>Check out more exciting topics and updates!</p>
-          </div>
-        );
+        return <OthersContent/>
       case "my-interest":
         return renderMyInterestContent();
       default:
@@ -629,9 +947,9 @@ const Personalization = () => {
 
         {/* Main Content */}
         <div className="flex-1 p-6 lg:p-8 transition-all duration-300 lg:ml-65">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">
+          {/* <h1 className="text-3xl font-bold text-gray-800 mb-6">
             Personalization
-          </h1>
+          </h1> */}
           <div className="p-6 bg-white shadow-lg rounded-lg">
             {renderContent()}
           </div>

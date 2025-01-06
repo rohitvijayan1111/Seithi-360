@@ -27,9 +27,9 @@ const SideBarP = ({ setContent }) => {
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:relative lg:block lg:w-64`}
       >
-        <div className="flex items-center justify-center h-14 border-b">
+        {/* <div className="flex items-center justify-center h-14 border-b">
           <div className="font-semibold text-lg">Personalization</div>
-        </div>
+        </div> */}
         <div className="overflow-y-auto overflow-x-hidden flex-grow">
           <ul className="flex flex-col py-4 space-y-1">
             <li className="px-5">
@@ -64,11 +64,11 @@ const SideBarP = ({ setContent }) => {
             </li>
             <li>
               <button
-                onClick={() => handleContentChange("influencers")}
+                onClick={() => handleContentChange("worldnews")}
                 className="w-full text-left flex items-center h-11 px-4 py-2 hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500"
               >
                 <span className="mr-4">🌟</span>
-                <span className="text-sm">Influencers</span>
+                <span className="text-sm">World News</span>
               </button>
             </li>
             <li>
@@ -77,7 +77,7 @@ const SideBarP = ({ setContent }) => {
                 className="w-full text-left flex items-center h-11 px-4 py-2 hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500"
               >
                 <span className="mr-4">🎯</span>
-                <span className="text-sm">Others</span>
+                <span className="text-sm">Areas and Districts</span>
               </button>
             </li>
 
