@@ -26,7 +26,7 @@ const appRouter = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Navigate to="/home" replace={true} />,
+        element: <Navigate to="/seithi360" replace={true} />,
       },
       {
         path: "/home",
