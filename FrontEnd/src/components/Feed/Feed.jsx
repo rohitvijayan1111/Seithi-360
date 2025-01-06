@@ -7,6 +7,7 @@ import Sidebar from "./Utils/Sidebar";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import MainNewsComponent from "./Utils/MainNews";
+import AdGrid from "../AdComponent/utils/AdGrid";
 
 const Feed = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -24,14 +25,13 @@ const Feed = () => {
           <TopNewsCarousel />
         </section>
 
-      {/* Local News Section */}
+        {/* Local News Section */}
         <section className="mb-8">
           <h2 className="text-2xl font-bold mb-4">
             Local News {district ? `- ${district}` : ""}
           </h2>
           <LocalNewsTicker />
         </section>
-
 
         {/* Grid Layout: Main News and Sidebar */}
         <section className="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -67,6 +67,22 @@ const Feed = () => {
           </div>
         </section>
       </main>
+      <div className="container mx-auto">
+        <div className="flex items-center space-x-2 mt-5">
+          {/* Ads Label */}
+          <p className="text-2xl">Ads</p>
+          {/* Google AdSense Logo */}
+          <img
+            src="https://logos-world.net/wp-content/uploads/2022/04/Google-Adsense-Logo-2015-present-700x394.png"
+            alt="Google AdSense"
+            className="h-9" // Controls the height of the image to make it smaller
+          />
+          <p className="text-sm text-gray-500">Powered by Google AdSense</p>
+        </div>
+
+        {/* Ad Grid */}
+        <AdGrid />
+      </div>
 
       {/* Footer */}
       <footer className="bg-gray-800 text-white py-4 mt-8 text-center">
