@@ -40,7 +40,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "Rithik@28raja",
+  password: "pass123",
   database: "kynhood",
 });
 
@@ -237,58 +237,58 @@ app.get("/api/getUserPosts", async (req, res) => {
 
 
 
-// app.post('/generate-quiz', async (req, res) => {
-//   const { newsData } = req.body;
+app.post('/generate-quiz', async (req, res) => {
+  const { newsData } = req.body;
 
-//   if (!newsData || !Array.isArray(newsData) || newsData.length === 0) {
-//     return res.status(400).json({ error: 'News data is required and should be an array.' });
-//   }
+  if (!newsData || !Array.isArray(newsData) || newsData.length === 0) {
+    return res.status(400).json({ error: 'News data is required and should be an array.' });
+  }
 
-//   try {
-//     // Store all generated questions
-//     const quiz = [];
+  try {
+    // Store all generated questions
+    const quiz = [];
 
-//     // Loop through each news article to generate a question
-//     for (const article of newsData) {
-//       const dataString = JSON.stringify(article, null, 2);
+    // Loop through each news article to generate a question
+    for (const article of newsData) {
+      const dataString = JSON.stringify(article, null, 2);
 
-//       // Generate question for each news article
-//       const result = await geminiModel.generateContent(`
-//        Based on the following news, create one multiple-choice question with 4 options. Make sure the question is relevant to the news provided. Here is the news to analyze:
+      // Generate question for each news article
+      const result = await geminiModel.generateContent(`
+       Based on the following news, create one multiple-choice question with 4 options. Make sure the question is relevant to the news provided. Here is the news to analyze:
 
-//         Format the response as:
-//         1) According to the news, AI is primarily being used in healthcare for:
-//         (a) Administrative tasks
-//         (b) Diagnostics and treatment plans
-//         (c) Patient education
-//         (d) Drug discovery
-//         Correct answer: (b)
+        Format the response as:
+        1) According to the news, AI is primarily being used in healthcare for:
+        (a) Administrative tasks
+        (b) Diagnostics and treatment plans
+        (c) Patient education
+        (d) Drug discovery
+        Correct answer: (b)
         
-//         the news need not to be in this context.
+        the news need not to be in this context.
 
-//         Data to Analyze:
-//         ${dataString}
-//       `);
+        Data to Analyze:
+        ${dataString}
+      `);
 
-//       console.log("Result received from Gemini API:", result);
+      console.log("Result received from Gemini API:", result);
 
-//       if (!result || !result.response || !result.response.text) {
-//         return res.status(500).json({ error: 'Unable to generate quiz for some news.' });
-//       }
+      if (!result || !result.response || !result.response.text) {
+        return res.status(500).json({ error: 'Unable to generate quiz for some news.' });
+      }
 
-//       const rawQuiz = await result.response.text();
-//       console.log("Generated Quiz for this article:", rawQuiz);
+      const rawQuiz = await result.response.text();
+      console.log("Generated Quiz for this article:", rawQuiz);
 
-//       const formattedQuiz = parseQuiz(rawQuiz); // Call parseQuiz to format the raw quiz text
-//       quiz.push(formattedQuiz[0]); // Assuming each result is a single question
-//     }
+      const formattedQuiz = parseQuiz(rawQuiz); // Call parseQuiz to format the raw quiz text
+      quiz.push(formattedQuiz[0]); // Assuming each result is a single question
+    }
 
-//     res.status(200).json({ quiz });
-//   } catch (error) {
-//     console.error('Error generating quiz:', error);
-//     res.status(500).json({ error: 'An unexpected error occurred.' });
-//   }
-// });
+    res.status(200).json({ quiz });
+  } catch (error) {
+    console.error('Error generating quiz:', error);
+    res.status(500).json({ error: 'An unexpected error occurred.' });
+  }
+});
 
 
 // Function to fetch captions using Google APIs
@@ -1022,6 +1022,181 @@ app.get('/youtube-videos', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
+app.post("/update-search-history", async (req, res) => {
+  const { userId, searchQuery } = req.body;
+
+  if (!userId || !searchQuery) {
+    return res.status(400).send("Invalid input");
+  }
+
+  try {
+    // Fetch the current search history for the user
+    db.query(
+      "SELECT search_history FROM users WHERE id = ?",
+      [userId],
+      (err, results) => {
+        if (err) {
+          console.error("Error fetching user data:", err);
+          return res.status(500).send("Error fetching user data");
+        }
+
+        if (!results.length) {
+          return res.status(404).send("User not found");
+        }
+
+        let searchHistory = {};
+        
+        // Safely parse search history
+        try {
+          // Log the raw search history for debugging
+          console.log("Raw search history:", results[0].search_history);
+          console.log("Type of search history:", typeof results[0].search_history);
+
+          // Check if search_history exists and is not null
+          if (results[0].search_history) {
+            // Handle different possible input types
+            const historyData = results[0].search_history;
+            
+            // If it's already an object, use it directly
+            if (typeof historyData === 'object') {
+              searchHistory = historyData;
+            } 
+            // If it's a string, try to parse it
+            else if (typeof historyData === 'string') {
+              // Remove any leading/trailing whitespace
+              const trimmedHistory = historyData.trim();
+              
+              // Only parse if not an empty string
+              if (trimmedHistory) {
+                searchHistory = JSON.parse(trimmedHistory);
+              }
+            }
+          }
+        } catch (parseErr) {
+          console.error("Error parsing search history:", parseErr);
+          // If parsing fails, start with an empty object
+          searchHistory = {};
+        }
+
+        // Ensure searchHistory is an object
+        if (typeof searchHistory !== 'object' || searchHistory === null) {
+          searchHistory = {};
+        }
+
+        // Update search history
+        searchHistory[searchQuery] = (searchHistory[searchQuery] || 0) + 1;
+
+        // Limit search history to last 10 entries
+        const limitedSearchHistory = Object.fromEntries(
+          Object.entries(searchHistory)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10)
+        );
+
+        // Stringify the search history
+        const searchHistoryString = JSON.stringify(limitedSearchHistory);
+
+        // Update the database
+        db.query(
+          "UPDATE users SET search_history = ? WHERE id = ?",
+          [searchHistoryString, userId],
+          (updateErr) => {
+            if (updateErr) {
+              console.error("Error updating search history:", updateErr);
+              return res.status(500).send("Error updating search history");
+            }
+
+            res.status(200).json({
+              message: "Search history updated successfully",
+              searchHistory: limitedSearchHistory
+            });
+          }
+        );
+      }
+    );
+  } catch (error) {
+    console.error("Error updating search history:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.get("/top-searches/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return res.status(400).send("User  ID is required");
+  }
+
+  try {
+    // Fetch the user's search history from the database
+    db.query(
+      "SELECT search_history FROM users WHERE id = ?",
+      [userId],
+      (err, results) => {
+        if (err) {
+          console.error("Error fetching user data:", err);
+          return res.status(500).send("Error fetching user data");
+        }
+
+        if (!results.length) {
+          return res.status(404).send("User  not found");
+        }
+
+        let searchHistory = {};
+
+        // Safely parse search history
+        try {
+          // Log the raw search history for debugging
+          console.log("Raw search history:", results[0].search_history);
+          console.log("Type of search history:", typeof results[0].search_history);
+
+          // Check if search_history exists and is not null
+          if (results[0].search_history) {
+            const historyData = results[0].search_history;
+
+            // If it's already an object, use it directly
+            if (typeof historyData === 'object') {
+              searchHistory = historyData;
+            } 
+            // If it's a string, try to parse it
+            else if (typeof historyData === 'string') {
+              const trimmedHistory = historyData.trim();
+              
+              // Only parse if not an empty string
+              if (trimmedHistory) {
+                searchHistory = JSON.parse(trimmedHistory);
+              }
+            }
+          }
+        } catch (parseErr) {
+          console.error("Error parsing search history:", parseErr);
+          return res.status(500).send("Corrupted search history data");
+        }
+
+        // Ensure searchHistory is an object
+        if (typeof searchHistory !== 'object' || searchHistory === null) {
+          searchHistory = {};
+        }
+
+        // Convert searchHistory object to an array of [query, count] pairs
+        const searchEntries = Object.entries(searchHistory);
+
+        // Sort entries by count in descending order
+        searchEntries.sort((a, b) => b[1] - a[1]);
+
+        // Take the top 3 entries
+        const topSearches = searchEntries.slice(0, 3);
+
+        res.status(200).json({ topSearches });
+      }
+    );
+  } catch (error) {
+    console.error("Error retrieving top searches:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
 
 // Start the server
 app.listen(PORT, () => {

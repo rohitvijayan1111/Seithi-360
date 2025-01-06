@@ -78,7 +78,18 @@ export default function Example() {
   const handleSearch = async (event) => {
     if (event.key === "Enter" || event.type === "click") {
       await loadLocalNews();
+      try {
+        await axios.post("http://localhost:5000/update-search-history", {
+          userId:sessionStorage.getItem('userId'), // Replace with dynamic user ID
+          searchQuery,
+        });
+        console.log("Search logged successfully");
+      } catch (error) {
+        console.error("Error logging search:", error);
+      }
     }
+   
+
   };
 
   return (
