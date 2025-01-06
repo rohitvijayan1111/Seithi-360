@@ -2,27 +2,51 @@
 
 import { motion } from "framer-motion";
 import BentoGrid from "../utils/Grids";
+import {
+  FaUsers,
+  FaRegNewspaper,
+  FaPaperclip,
+  FaGlobe,
+  FaRegEnvelope,
+  FaVideo,
+} from "react-icons/fa";
 
 const newsItems = [
   {
-    title: "Breaking News 1",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    title: "Seithi360 Overview",
+    description:
+      "Seithi360 is a feature-rich news aggregator designed to empower communities by curating accurate, personalized news from verified sources.",
+    icon: <FaRegNewspaper className="h-6 w-6 text-gray-600" />,
   },
   {
-    title: "Feature Update",
-    description: "Our platform now supports real-time notifications.",
+    title: "Multi-language Support",
+    description:
+      "The platform delivers news in multiple languages, making it accessible to diverse audiences.",
+    icon: <FaGlobe className="h-6 w-6 text-gray-600" />,
   },
   {
-    title: "User Success Story",
-    description: "Discover how Seithi360 transformed communities.",
+    title: "Tailored News Updates",
+    description:
+      "Stay informed with customized email updates based on your location and interests.",
+    icon: <FaRegEnvelope className="h-6 w-6 text-gray-600" />,
   },
   {
-    title: "Upcoming Event",
-    description: "Join our live webinar next week!",
+    title: "Community-Driven News",
+    description:
+      "Join communities to access related news and engage with like-minded individuals.",
+    icon: <FaUsers className="h-6 w-6 text-gray-600" />,
   },
   {
-    title: "Milestone Achieved",
-    description: "We’ve surpassed 1 million active users!",
+    title: "Shorts Feature",
+    description:
+      "Catch up quickly with bite-sized news highlights through our Shorts feature.",
+    icon: <FaVideo className="h-6 w-6 text-gray-600" />,
+  },
+  {
+    title: "Trusted Sources",
+    description:
+      "Leverage custom web scraping and trusted APIs to ensure news is reliable and up-to-date.",
+    icon: <FaPaperclip className="h-6 w-6 text-gray-600" />,
   },
 ];
 
@@ -32,7 +56,7 @@ const marqueeVariants = {
     transition: {
       x: {
         repeat: Infinity,
-        duration: 30, // Slow down the scroll speed by increasing the duration
+        duration: 30, // Slow down the scroll speed
         ease: "linear",
       },
     },
@@ -63,9 +87,12 @@ export default function AboutUsSection() {
               key={index}
               className="flex-none w-64 p-4 rounded-lg bg-white shadow-lg hover:shadow-xl transition-transform transform hover:scale-105"
             >
-              <h3 className="text-lg font-semibold text-gray-900">
-                {item.title}
-              </h3>
+              <div className="flex items-center space-x-4">
+                {item.icon}
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {item.title}
+                </h3>
+              </div>
               <p className="mt-2 text-sm text-gray-600">{item.description}</p>
             </div>
           ))}

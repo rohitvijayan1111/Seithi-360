@@ -43,7 +43,7 @@ export default function Brand() {
           Bringing you the latest from credible platforms. Still Counting...
         </motion.p>
 
-        {/* Animated logos with staggered effect */}
+        {/* Top News Sources */}
         <motion.div
           variants={container}
           initial="hidden"
@@ -67,7 +67,7 @@ export default function Brand() {
             </p>
           </motion.div>
 
-          {/* Times of India */}
+          {/* The Times of India */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col items-center"
@@ -131,6 +131,120 @@ export default function Brand() {
             <p className="mt-4 text-lg font-semibold text-gray-800">
               India Today
             </p>
+          </motion.div>
+        </motion.div>
+
+        {/* Local News Sources */}
+        <motion.h3
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="text-center text-xl font-extrabold text-gray-900 sm:text-2xl mt-16"
+        >
+          Trusted by Local News Sources
+        </motion.h3>
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="visible"
+          className="mx-auto mt-10 grid max-w-lg grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 items-center lg:max-w-none"
+        >
+          {/* Polimer */}
+          <motion.div
+            variants={fadeInUp}
+            className="flex flex-col items-center"
+          >
+            <img
+              alt="Polimer"
+              src="https://yt3.googleusercontent.com/ytc/AIdro_lsZg5AuszjSq2zyrai2A2B7xUF_e24UZLtXgm5NuK3i1nS=s900-c-k-c0x00ffffff-no-rj"
+              width={158}
+              height={48}
+              className="max-h-16 object-contain"
+            />
+            <p className="mt-4 text-lg font-semibold text-gray-800">Polimer</p>
+          </motion.div>
+
+          {/* Thinathanthi */}
+          <motion.div
+            variants={fadeInUp}
+            className="flex flex-col items-center"
+          >
+            <img
+              alt="Thinathanthi"
+              src="https://3.imimg.com/data3/YF/CL/MY-3106798/daily-thanthi.jpg"
+              width={158}
+              height={48}
+              className="max-h-16 object-contain"
+            />
+            <p className="mt-4 text-lg font-semibold text-gray-800">
+              Thinathanthi
+            </p>
+          </motion.div>
+
+          {/* Puthiyathalamurai */}
+          <motion.div
+            variants={fadeInUp}
+            className="flex flex-col items-center"
+          >
+            <img
+              alt="Puthiyathalamurai"
+              src="https://yt3.googleusercontent.com/PaXj0o9oHCnh6lUeaLURUmxTccEuLSWejfGFZhYNwsgjcz7bxxLEsk2f0cY_7j-hxsOg5Jq18KA=s900-c-k-c0x00ffffff-no-rj"
+              width={158}
+              height={48}
+              className="max-h-16 object-contain"
+            />
+            <p className="mt-4 text-lg font-semibold text-gray-800">
+              Puthiyathalamurai
+            </p>
+          </motion.div>
+
+          {/* Dinamalar */}
+          <motion.div
+            variants={fadeInUp}
+            className="flex flex-col items-center"
+          >
+            <img
+              alt="Dinamalar"
+              src="https://india.mom-gmr.org/uploads/tx_lfrogmom/media/16661-1592_import.png"
+              width={158}
+              height={48}
+              className="max-h-16 object-contain"
+            />
+            <p className="mt-4 text-lg font-semibold text-gray-800">
+              Dinamalar
+            </p>
+          </motion.div>
+
+          {/* Maalaimalar */}
+          <motion.div
+            variants={fadeInUp}
+            className="flex flex-col items-center"
+          >
+            <img
+              alt="Maalaimalar"
+              src="https://media.maalaimalar.com/h-upload/2022/06/24/1718034-eb-pole.jpg"
+              width={158}
+              height={48}
+              className="max-h-16 object-contain"
+            />
+            <p className="mt-4 text-lg font-semibold text-gray-800">
+              Maalaimalar
+            </p>
+          </motion.div>
+
+          {/* Dinamani */}
+          <motion.div
+            variants={fadeInUp}
+            className="flex flex-col items-center"
+          >
+            <img
+              alt="Dinamani"
+              src="https://5.imimg.com/data5/SELLER/Default/2024/2/390039773/HE/SX/FP/17709071/dinamani-newspaper-advertisement-service.jpeg"
+              width={158}
+              height={48}
+              className="max-h-16 object-contain"
+            />
+            <p className="mt-4 text-lg font-semibold text-gray-800">Dinamani</p>
           </motion.div>
         </motion.div>
 

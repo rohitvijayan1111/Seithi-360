@@ -22,7 +22,6 @@ const navigation = [{name:"Home",href:"/home",current:false},{ name: "Your News"
 
 const userNavigation = [
   { name: "Your Profile", href: "/user-profile", current: false },
-  { name: "Settings", href: "#" },
   { name: "Sign out", href: "#" },
 ];
 
