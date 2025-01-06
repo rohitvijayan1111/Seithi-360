@@ -251,70 +251,55 @@ export default function Example() {
   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
     <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] p-6 overflow-y-auto">
       <button
-        onClick={() => setShowResults(false)}
+        onClick={() => {
+          setShowResults(false);
+          setLoading(false);
+        }}
         className="absolute top-4 right-4 text-gray-500 hover:text-gray-900"
       >
         ✖
       </button>
-      <h2 className="text-lg font-bold mb-4">Search Results</h2>
-      <div className="space-y-4">
-      {showResults && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] p-6 overflow-y-auto">
-            <button
-              onClick={() => {
-                setShowResults(false);
-                setLoading(false);
-              }}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-900"
-            >
-              ✖
-            </button>
-            <h2 className="text-lg font-bold mb-4">Search Results</h2>
-            
-            {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      <h2 className="text-lg font-bold mb-4 text-black">Search Results</h2>
+      
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {searchResults.length > 0 ? (
+            searchResults.map((news, index) => (
+              <div key={index} className="bg-gray-100 p-4 rounded-md hover:bg-gray-200 transition duration-200">
+                <img
+                  src={news.imageUrl}
+                  alt={news.title}
+                  className="w-full h-60 object-cover rounded-md"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://via.placeholder.com/300x200";
+                  }}
+                />
+                <h3 className="text-md font-semibold mt-2 text-black">{news.title}</h3>
+                <p className="text-sm text-black line-clamp-2">
+                  {news.description}
+                </p>
+                <a
+                  href={news.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-500 hover:text-indigo-700 hover:underline text-sm mt-2 block"
+                >
+                  Read More
+                </a>
               </div>
-            ) : (
-              <div className="space-y-4">
-                {searchResults.length > 0 ? (
-                  searchResults.map((news, index) => (
-                    <div key={index} className="bg-gray-100 p-4 rounded-md">
-                      <img
-                        src={news.imageUrl}
-                        alt={news.title}
-                        className="w-full h-60 object-cover rounded-md"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "https://via.placeholder.com/300x200";
-                        }}
-                      />
-                      <h3 className="text-md font-semibold mt-2">{news.title}</h3>
-                      <p className="text-sm text-gray-600 line-clamp-2">
-                        {news.description}
-                      </p>
-                      <a
-                        href={news.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-indigo-500 hover:underline text-sm mt-2 block"
-                      >
-                        Read More
-                      </a>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center text-gray-500">
-                    No results found
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+            ))
+          ) : (
+            <div className="text-center text-black">
+              No results found
+            </div>
+          )}
         </div>
       )}
-      </div>
     </div>
   </div>
 )}
