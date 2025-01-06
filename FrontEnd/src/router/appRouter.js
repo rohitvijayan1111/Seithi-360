@@ -59,7 +59,7 @@ const appRouter = createBrowserRouter([
 		element: <QuizSection/>
 	  },
 	  {
-		path: "/post",
+		path: "/post/:hashtag",
 		element: <UserPostsPage/>
 	  }
     ],
