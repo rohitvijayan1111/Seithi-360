@@ -13,6 +13,7 @@ import QuizSection from "../pages/QuizSection";
 import LandingPage from "../components/LandingPage/LandingPage";
 import Personalization from "../components/Personalization/Personalization";
 import UserPostsPage from "../pages/UserPostsPage";import Community from "../components/Communities/Community";
+import Shorts from "../components/Shorts Page/Shorts";
 
 const appRouter = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/personalized",
         element: <PersonalizedPage />,
+      },
+      {
+        path: "/shorts",
+        element:<Shorts />
       },
       {
         path: "*",
