@@ -179,7 +179,86 @@ const Top10News = () => {
 };
 
 
+const Worldnews = () => {
+  const [topNews, setTopNews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchTop10News = async () => {
+      try {
+        const response = await fetch(
+          "https://rss.app/feeds/v1.1/yzTEoaJ4BR08AUsb.json"
+        );
+        const data = await response.json();
+        const items = data.items.map((item) => ({
+          title: item.title,
+          description: item.content_text || "No description available",
+          imageUrl: item.image || "https://via.placeholder.com/300x200",
+          url: item.url,
+          pubDate: item.date_published,
+        }));
+        setTopNews(items);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch news:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchTop10News();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4 mx-auto"></div>
+          <p className="text-gray-600">Loading World News...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-lg text-red-600">
+      <h2 className="text-2xl font-bold mb-4">World News</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {topNews.map((news, newsIndex) => (
+          <div key={newsIndex} className="p-4">
+            <div className="bg-white rounded-lg shadow-md hover:shadow-xl overflow-hidden transition-shadow duration-300">
+              <img
+                src={news.imageUrl}
+                alt={news.title}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+                  {news.title}
+                </h3>
+                <p className="text-sm text-gray-600 line-clamp-2">
+                  {news.description}
+                </p>
+                <div className="flex justify-between items-center mt-2">
+                  <a
+                    href={news.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline text-sm"
+                  >
+                    Read More
+                  </a>
+                  <span className="text-xs text-gray-500">
+                    {new Date(news.pubDate).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 
 const SkeletonLoader = () => {
@@ -839,13 +918,8 @@ const Personalization = () => {
     switch (content) {
       case "youtube-news":
         return renderYouTubeSections();
-      case "influencers":
-        return (
-          <div className="text-lg text-green-600">
-            <h2 className="text-2xl font-bold mb-4">Influencers</h2>
-            <p>Discover popular influencers and their stories!</p>
-          </div>
-        );
+      case "worldnews":
+        return <Worldnews/>
       case "top-10":
         return <Top10News />
       case "others":
@@ -873,9 +947,9 @@ const Personalization = () => {
 
         {/* Main Content */}
         <div className="flex-1 p-6 lg:p-8 transition-all duration-300 lg:ml-65">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">
+          {/* <h1 className="text-3xl font-bold text-gray-800 mb-6">
             Personalization
-          </h1>
+          </h1> */}
           <div className="p-6 bg-white shadow-lg rounded-lg">
             {renderContent()}
           </div>
