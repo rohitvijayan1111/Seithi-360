@@ -33,6 +33,7 @@
     "react-spinners": "^0.15.0",
     "safe-buffer": "^5.2.1",
     "slick-carousel": "^1.8.1",
+    "stream-browserify": "^3.0.0",
     "styled-components": "^6.1.12",
     "timers": "^0.1.1",
     "timers-browserify": "^2.0.12",
