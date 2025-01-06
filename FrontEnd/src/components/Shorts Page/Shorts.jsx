@@ -1,45 +1,55 @@
 import React, { useState, useEffect, useRef } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Skeleton } from "antd"; // Using Ant Design for skeleton loading
-import VideoCard from "./utils/VideoCard";
+import { Skeleton } from "antd";
 import Example from "../Feed/Header/Header";
+import axios from "axios";
 
-// Mock function to generate fake video data
-const fetchVideos = async (page) => {
-  return new Array(5).fill(null).map((_, index) => ({
-    id: page * 5 + index,
-    title: `Short Video ${page * 5 + index + 1}`,
-    videoUrl: `https://www.w3schools.com/html/mov_bbb.mp4`, // Fake video URL for now
-    views: Math.floor(Math.random() * 10000),
-    description: `A short video about tech ${page * 5 + index + 1}`,
-  }));
+const fetchYouTubeVideosForSection = async (section) => {
+  try {
+    const response = await axios.get("http://localhost:5000/youtube-videos", {
+      params: { query: section || "Short News" },
+    });
+    return response.data.videos.map((video) => ({
+      title: video.title,
+      description: video.description || "No description available",
+      imageUrl: video.thumbnail || "https://via.placeholder.com/300x200",
+      videoUrl: video.url,
+      channel: video.channelName,
+      viewCount: video.viewCount,
+      pubDate: video.pubDate,
+    }));
+  } catch (error) {
+    console.error(`Error fetching YouTube videos for ${section}:`, error);
+    return [];
+  }
 };
 
 const Shorts = () => {
   const [videos, setVideos] = useState([]);
-  const [page, setPage] = useState(1);
+  const [currentIndex, setCurrentIndex] = useState(0); // Track the active video index
   const [hasMore, setHasMore] = useState(true);
-  const videoRefs = useRef([]);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+
+  const handleUserInteraction = () => {
+    setHasUserInteracted(true);
+  };
 
   useEffect(() => {
     loadMoreVideos();
   }, []);
 
   const loadMoreVideos = async () => {
-    const newVideos = await fetchVideos(page);
+    const newVideos = await fetchYouTubeVideosForSection("news shorts");
     setVideos((prevVideos) => [...prevVideos, ...newVideos]);
     setHasMore(newVideos.length > 0);
-    setPage(page + 1);
   };
 
-  // Intersection Observer callback to play/pause videos based on visibility
+  // Intersection Observer callback to track active video
   const handleVideoVisibility = (entries) => {
     entries.forEach((entry) => {
-      const video = entry.target;
       if (entry.isIntersecting) {
-        video.play();
-      } else {
-        video.pause();
+        const index = parseInt(entry.target.dataset.index, 10);
+        setCurrentIndex(index);
       }
     });
   };
@@ -49,26 +59,21 @@ const Shorts = () => {
     const observer = new IntersectionObserver(handleVideoVisibility, {
       root: null,
       rootMargin: "0px",
-      threshold: 0.5, // Video should be at least 50% visible to play
+      threshold: 0.5, // At least 50% visible to mark as active
     });
 
-    // Attach observer to each video
-    videoRefs.current.forEach((video) => {
-      observer.observe(video);
-    });
+    const videoContainers = document.querySelectorAll(".video-container");
+    videoContainers.forEach((container) => observer.observe(container));
 
-    // Clean up observer on unmount
     return () => {
-      videoRefs.current.forEach((video) => {
-        observer.unobserve(video);
-      });
+      videoContainers.forEach((container) => observer.unobserve(container));
     };
   }, [videos]);
 
   return (
     <div className="shorts-page bg-white min-h-screen flex flex-col">
       <Example />
-      <div className="mt-10 p-4">
+      <div className="mt-0 p-0 flex-grow">
         <InfiniteScroll
           dataLength={videos.length}
           next={loadMoreVideos}
@@ -90,14 +95,36 @@ const Shorts = () => {
             ) : (
               videos.map((video, index) => (
                 <div
-                  key={video.id}
-                  className="video-container w-full flex justify-center items-center"
-                  style={{ height: "100vh", overflow: "hidden" }}
+                  key={index}
+                  className={`video-container flex justify-center items-center w-full ${
+                    currentIndex === index ? "block" : "hidden"
+                  }`}
+                  style={{
+                    height: "100vh", // Ensure each video container takes full height
+                    overflow: "hidden",
+                    display: "flex",
+                  }}
+                  data-index={index}
+                  onClick={handleUserInteraction}
                 >
-                  <VideoCard
-                    ref={(el) => (videoRefs.current[index] = el)}
-                    video={video}
-                  />
+                  {currentIndex === index && (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${
+                        video.videoUrl.split("v=")[1]
+                      }?rel=0&modestbranding=1&enablejsapi=1&autoplay=1`}
+                      title={video.title}
+                      className="w-full h-full"
+                      style={{
+                        aspectRatio: "9 / 16",
+                        maxWidth: "360px",
+                        border: "none",
+                        borderRadius: "8px",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                      }}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  )}
                 </div>
               ))
             )}
