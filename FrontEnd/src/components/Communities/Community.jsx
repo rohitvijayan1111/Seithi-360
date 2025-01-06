@@ -1,44 +1,119 @@
 import React, { useState, useEffect } from "react";
 import Example from "../Feed/Header/Header";
 import Sidebar from "./utils/SidebarC";
+import axios from "axios";
+
+// Function to fetch scraped articles based on the query (community name + " News")
+const fetchScrapedArticles = async (query) => {
+  try {
+    const response = await axios.get("http://localhost:5000/scrape3", {
+      params: { q: query || "Trending News" },
+    });
+    return response.data.articles || [];
+  } catch (error) {
+    console.error("Error fetching scraped articles:", error);
+    return [];
+  }
+};
+
+// Function to format articles for display
+const formatArticles = (articles) =>
+  articles.map((article) => ({
+    title: article.title,
+    description: article.source || "No description available",
+    imageUrl: article.imgSrc || "https://via.placeholder.com/300x200",
+    url: article.url,
+  }));
 
 const dummyCommunities = [
   {
     id: 1,
-    name: "Tech Enthusiasts",
-    description: "A community for discussing the latest in technology.",
-    posts: ["The Future of AI", "Top Programming Languages in 2025"],
-    members: 120,
+    name: "Dharmapuri",
+    description:
+      "A community for the people of Dharmapuri to connect and share.",
+    posts: [
+      "Local Festivals in Dharmapuri",
+      "Best Places to Visit in Dharmapuri",
+    ],
+    members: 50,
   },
   {
     id: 2,
-    name: "Fitness Freaks",
-    description: "Share your fitness journey and tips with others.",
-    posts: ["Best Post-Workout Meals", "Morning Yoga Routines"],
-    members: 85,
+    name: "Thiruvanmiyur",
+    description:
+      "A community for Thiruvanmiyur residents to connect and share.",
+    posts: ["Hidden Gems in Thiruvanmiyur", "Local Events in Thiruvanmiyur"],
+    members: 75,
   },
   {
     id: 3,
-    name: "Travel Diaries",
-    description: "Explore the world through the stories of fellow travelers.",
-    posts: ["Top 10 Destinations for 2025", "How to Travel on a Budget"],
-    members: 200,
+    name: "Thiruvannamalai",
+    description:
+      "A community for those interested in Thiruvannamalai’s spiritual and cultural heritage.",
+    posts: [
+      "Pilgrimages in Thiruvannamalai",
+      "Best Places to Visit in Thiruvannamalai",
+    ],
+    members: 100,
+  },
+  {
+    id: 4,
+    name: "Teynampet",
+    description:
+      "A community for the people of Teynampet to discuss local news and events.",
+    posts: ["Upcoming Events in Teynampet", "Famous Eateries in Teynampet"],
+    members: 65,
+  },
+  {
+    id: 5,
+    name: "Erode",
+    description:
+      "A community for Erode residents and those interested in Erode’s heritage.",
+    posts: ["Erode’s Famous Handlooms", "Festivals and Traditions in Erode"],
+    members: 90,
   },
 ];
 
 const Community = () => {
   const [communities, setCommunities] = useState([]);
   const [selectedCommunity, setSelectedCommunity] = useState(null);
+  const [communityPosts, setCommunityPosts] = useState([]);
+  const [loading, setLoading] = useState(false); // Loading state to show/hide loading effect
   const [toggleSidebar, setToggleSidebar] = useState(false);
 
+  // Fetching the community data on component mount
   useEffect(() => {
     setCommunities(dummyCommunities);
   }, []);
 
+  // Fetch posts when a community is selected
+  useEffect(() => {
+    if (selectedCommunity) {
+      const query = `${selectedCommunity.name} News`;
+      setLoading(true); // Set loading to true before fetching
+      fetchScrapedArticles(query)
+        .then((articles) => {
+          setCommunityPosts(formatArticles(articles));
+        })
+        .finally(() => {
+          setLoading(false); // Set loading to false after fetching
+        });
+    }
+  }, [selectedCommunity]);
+
+  // Rendering community details and posts
   const renderCommunityDetails = () => {
     if (!selectedCommunity) {
       return (
         <p className="text-gray-500">Select a community to view details</p>
+      );
+    }
+
+    if (loading) {
+      return (
+        <div className="flex justify-center items-center h-48">
+          <div className="w-12 h-12 border-t-4 border-blue-600 border-solid rounded-full animate-spin"></div>
+        </div>
       );
     }
 
@@ -56,14 +131,24 @@ const Community = () => {
         </button>
         <div className="mt-6">
           <h2 className="text-2xl font-bold border-b pb-2">Posts</h2>
-          {selectedCommunity.posts.length > 0 ? (
+          {communityPosts.length > 0 ? (
             <ul className="mt-4 space-y-2">
-              {selectedCommunity.posts.map((post, index) => (
+              {communityPosts.map((post, index) => (
                 <li
                   key={index}
                   className="p-3 bg-gray-100 rounded-md shadow hover:bg-gray-200 transition"
                 >
-                  {post}
+                  <a href={post.url} target="_blank" rel="noopener noreferrer">
+                    <h3 className="text-lg font-semibold">{post.title}</h3>
+                    <p className="text-gray-600">{post.description}</p>
+                    {post.imageUrl && (
+                      <img
+                        src={post.imageUrl}
+                        alt={post.title}
+                        className="mt-2 rounded-md"
+                      />
+                    )}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -77,7 +162,7 @@ const Community = () => {
 
   return (
     <>
-    <Example />
+      <Example />
       <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100 text-gray-800">
         <div className="lg:w-64 w-full lg:left-0 lg:top-0 lg:h-full lg:flex lg:flex-col bg-white mt-4 shadow-md lg:block lg:mt-0 z-50">
           {/* Sidebar */}

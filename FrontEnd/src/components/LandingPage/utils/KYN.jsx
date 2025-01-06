@@ -38,7 +38,7 @@ export default function LogoDisplay() {
           {/* Seithi360 Logo */}
           <div className="flex items-center justify-center">
             <motion.img
-              src="https://cdn-icons-png.flaticon.com/128/11922/11922419.png" // Add the actual path to your Seithi360 logo
+              src="seithi360-logo-bg.png" // Add the actual path to your Seithi360 logo
               alt="Seithi360 Logo"
               width={160} // Adjust the width to make both logos similar in size
               height={60} // Adjust the height for consistency

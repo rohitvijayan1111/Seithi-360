@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { FaFootballBall, FaLaptopCode, FaLandmark, FaChartLine, FaFilm, FaNewspaper } from "react-icons/fa";
+import { FaFootballBall, FaLaptopCode, FaLandmark, FaChartLine, FaFilm, FaNewspaper, FaCheckCircle } from "react-icons/fa";
 import { parseString } from "xml2js";
+import { Link } from "react-router-dom";
 import axios from "axios";
-
 const categories = [
   { name: "General", icon: <FaNewspaper /> },
   { name: "Sports", icon: <FaFootballBall /> },
@@ -24,11 +24,13 @@ const categoryFeedUrls = {
 const MainNewsComponent = () => {
   const [activeCategory, setActiveCategory] = useState("Sports");
   const [feedData, setFeedData] = useState([]);
+  const [articles, setArticles] = useState([]); // New state for articles
   const [loading, setLoading] = useState(false);
   const [views, setViews] = useState({});
   const [alertMessage, setAlertMessage] = useState("");
   const [inputData, setInputData] = useState({});
-  const [activeShareViewIndex, setActiveShareViewIndex] = useState(null); // Track which post has Share View visible
+  const [activeShareViewIndex, setActiveShareViewIndex] = useState(null); 
+
 
   const fetchFeed = async (category) => {
     setLoading(true);
@@ -51,8 +53,18 @@ const MainNewsComponent = () => {
     }
   };
 
+  const fetchArticles = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/news-articles"); // Replace with your API endpoint
+      setArticles(response.data);
+    } catch (error) {
+      console.error("Error fetching articles", error);
+    }
+  };
+
   useEffect(() => {
     fetchFeed(activeCategory);
+    fetchArticles(); // Fetch articles on component mount
   }, [activeCategory]);
 
   const handleInputChange = (index, type, value) => {
@@ -78,9 +90,8 @@ const MainNewsComponent = () => {
         title: feedData[index].title[0],
         link: feedData[index].link[0],
       };
-      setViews(updatedViews);
+      setViews (updatedViews);
 
-      // Send the shared view to the backend to store
       try {
         const payload = {
           username: "user123",  // Replace with dynamic username if needed
@@ -93,10 +104,8 @@ const MainNewsComponent = () => {
           link: feedData[index].link[0],
         };
 
-        // Use axios or fetch to send a POST request
         await axios.post("http://localhost:5000/api/shareview", payload); // Replace with your backend URL
         setAlertMessage("Your thoughts have been shared successfully!");
-        // Clear the input fields for the shared post
         setInputData((prevState) => ({
           ...prevState,
           [index]: {
@@ -112,10 +121,10 @@ const MainNewsComponent = () => {
   };
 
   const toggleShareViewVisibility = (index) => {
-    setActiveShareViewIndex(activeShareViewIndex === index ? null : index); // Toggle visibility
+    setActiveShareViewIndex(activeShareViewIndex === index ? null : index);
   };
 
-  const renderCategoryContent = () => {
+  const renderFeedContent = () => {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
@@ -135,10 +144,7 @@ const MainNewsComponent = () => {
               : "No date available";
 
             return (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-lg shadow-lg"
-              >
+              <div key={index} className="bg-white p-6 rounded-lg shadow-lg">
                 {imageUrl && (
                   <img
                     src={imageUrl}
@@ -158,16 +164,12 @@ const MainNewsComponent = () => {
                 >
                   Read more
                 </a>
-
-                {/* Share View Section Toggle Button */}
                 <button
                   onClick={() => toggleShareViewVisibility(index)}
                   className="mt-4 bg-blue-500 text-white mx-2 py-1 px-1 rounded-lg hover:bg-blue-700 text-sm"
                 >
                   Share Your Thoughts
                 </button>
-
-                {/* Share View Section */}
                 {activeShareViewIndex === index && (
                   <div className="mt-4 bg-gray-100 p-4 rounded-lg shadow-md">
                     <textarea
@@ -181,7 +183,7 @@ const MainNewsComponent = () => {
                       value={inputData[index]?.currentHashtags || ""}
                       onChange={(e) => handleInputChange(index, "currentHashtags", e.target.value)}
                       placeholder="Add hashtags (e.g. #sports)"
-                      className="input-field mt-2 bg-gray-100 bg-gray-100 border-2 p-2 rounded-md border-black-900 border-solid"
+                      className="input-field mt-2 bg-gray-100 border-2 p-2 rounded-md border-black-900 border-solid"
                     />
                     <button
                       onClick={() => handleShareView(index)}
@@ -196,6 +198,78 @@ const MainNewsComponent = () => {
           })
         ) : (
           <p className="text-center text-gray-600">No {activeCategory} news available at the moment.</p>
+        )}
+      </div>
+    );
+  };
+
+  const renderArticlesContent = () => {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        {articles.length > 0 ? (
+          articles.map((article) => {
+            // Construct the full URL for the image
+            const imageUrl = article.image_path
+              ? `http://localhost:5000${article.image_path}` // Use the correct URL
+              : "";
+  
+            const pubDate = new Date(article.created_at).toLocaleDateString();
+  
+            return (
+              <div key={article.id} className="bg-white p-6 rounded-lg shadow-lg">
+                {imageUrl && (
+                  <img
+                    src={imageUrl} // Use the constructed URL
+                    alt="Article Image"
+                    className="w-full h-48 object-cover rounded-lg mb-4"
+                  />
+                )}
+                <h3 className="font-semibold text-xl text-blue-600 mb-2 hover:text-blue-800 transition-colors duration-200">
+                  {article.title}
+                </h3>
+                <p className="text-sm text-gray-500 mb-4">{pubDate}</p>
+                <p className="text-gray-700 mb-4">{article.content}</p>
+                <button
+                  onClick={() => toggleShareViewVisibility(article.id)}
+                  className="mt-4 bg-blue-500 text-white mx-2 py-1 px-1 rounded-lg hover:bg-blue-700 text-sm"
+                >
+                  Share Your Thoughts
+                </button>
+                <br></br>
+                <Link
+                  to={`/article/${article.id}`} // Navigate to the article details page
+                  className="mt-4 bg-blue-500 text-white mx-2 py-1 px-1 rounded-lg hover:bg-blue-700 text-sm"
+                >
+                  Read More
+                </Link>
+                {activeShareViewIndex === article.id && (
+                  <div className="mt-4 bg-gray-100 p-4 rounded-lg shadow-md">
+                    <textarea
+                      value={inputData[article.id]?.currentView || ""}
+                      onChange={(e) => handleInputChange(article.id, "currentView", e.target.value)}
+                      placeholder="Write your thoughts..."
+                      className="textarea-field bg-gray-100 border-2 p-2 rounded-md border-black-900 border-solid"
+                    ></textarea>
+                    <input
+                      type="text"
+                      value={inputData[article.id]?.currentHashtags || ""}
+                      onChange={(e) => handleInputChange(article.id, "currentHashtags", e.target.value)}
+                      placeholder="Add hashtags (e.g. #news)"
+                      className="input-field mt-2 bg-gray-100 border-2 p-2 rounded-md border-black-900 border-solid"
+                    />
+                    <button
+                      onClick={() => handleShareView(article.id)}
+                      className="mt-4 bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-700"
+                    >
+                      Post
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        ) : (
+          <p className="text-center text-gray-600">No articles available at the moment.</p>
         )}
       </div>
     );
@@ -219,7 +293,10 @@ const MainNewsComponent = () => {
           </button>
         ))}
       </div>
-      <div className="mt-6 p-4 rounded-lg bg-gray-50">{renderCategoryContent()}</div>
+      <div className="mt-6 p-4 rounded-lg bg-gray-50">
+        {renderFeedContent()}
+        {renderArticlesContent()} {/* Render articles below the news feed */}
+      </div>
 
       {/* Alert Message */}
       {alertMessage && (

@@ -13,6 +13,9 @@ const cron = require("node-cron");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const geminiApiKey = "AIzaSyAdFW-tfACDH3xlRiB2TFir0RZpm9-RxCc";
 const googleAI = new GoogleGenerativeAI(geminiApiKey);
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const geminiConfig = {
   temperature: 0.9,
@@ -26,6 +29,7 @@ const geminiModel = googleAI.getGenerativeModel({
   geminiConfig,
 });
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 // Middleware
@@ -36,7 +40,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "pass123",
+  password: "Rithik@28raja",
   database: "kynhood",
 });
 
@@ -118,6 +122,70 @@ app.get('/api/trending-hashtags', (req, res) => {
       return;
     }
     res.json(results);
+  });
+});
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, 'uploads');
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath);
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage });
+
+app.use(express.json());
+
+app.post('/api/upload', upload.single('image'), (req, res) => {
+  if (!req.file) return res.status(400).send('No file uploaded.');
+  res.status(200).json({ imagePath: `/uploads/${req.file.filename}` });
+});
+
+app.post('/api/articles', (req, res) => {
+  const { title, content, metaTags, imagePath } = req.body;
+  
+  db.query(
+    'INSERT INTO news_articles (title, content, meta_tags, image_path) VALUES (?, ?, ?, ?)',
+    [title, content, metaTags, imagePath],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Error inserting article');
+      }
+      res.status(201).json({ id: results.insertId, title, content, metaTags, imagePath });
+    }
+  );
+});
+
+app.get('/api/news-articles', async (req, res) => {
+  try {
+    const [articles] = await db.promise().query('SELECT * FROM news_articles ORDER BY created_at DESC');
+    res.json(articles);
+  } catch (error) {
+    console.error('Error fetching news articles', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get("/api/news-articles/:id", (req, res) => {
+  const articleId = req.params.id;
+  const query = "SELECT * FROM news_articles WHERE id = ?";
+
+  db.query(query, [articleId], (err, results) => {
+    if (err) {
+      console.error("Error fetching article", err);
+      return res.status(500).send("Error fetching article");
+    }
+    if (results.length === 0) {
+      return res.status(404).send("Article not found");
+    }
+    res.json(results[0]);
   });
 });
 
@@ -320,6 +388,7 @@ app.post("/register", (req, res) => {
     languagePreference,
     dateOfBirth,
     district,
+    area
   } = req.body;
 
   // Hash the password using bcrypt
@@ -330,8 +399,8 @@ app.post("/register", (req, res) => {
 
     // Prepare data to be inserted into the database
     const query = `
-      INSERT INTO users (name, email, password, mobile, preferred_categories, language_preference, date_of_birth, district)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (name, email, password, mobile, preferred_categories, language_preference, date_of_birth, district, area)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     // Convert the preferredCategories array into a JSON string for storing
@@ -349,6 +418,7 @@ app.post("/register", (req, res) => {
         languagePreference,
         dateOfBirth,
         district,
+        area
       ],
       (err, result) => {
         if (err) {
@@ -402,6 +472,8 @@ app.post("/login", (req, res) => {
             preference: user.preferred_categories,
             languages: user.language_preference,
             district: user.district,
+            name: user.name,
+            email: user.email,
           });
       } else {
         res.status(400).json({ message: "Invalid email or password" });
