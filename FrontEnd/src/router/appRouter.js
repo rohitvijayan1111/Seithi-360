@@ -13,6 +13,8 @@ import QuizSection from "../pages/QuizSection";
 import LandingPage from "../components/LandingPage/LandingPage";
 import Personalization from "../components/Personalization/Personalization";
 import UserPostsPage from "../pages/UserPostsPage";import Community from "../components/Communities/Community";
+import NewsArticleForm from "../pages/NewsArticleForm";
+import FullArticle from "../pages/FullArticle";
 
 const appRouter = createBrowserRouter([
   {
@@ -66,6 +68,14 @@ const appRouter = createBrowserRouter([
 	  {
 		path: "/post/:hashtag",
 		element: <UserPostsPage/>
+	  },
+	  {
+		path: "/article/:id",
+		element: <FullArticle/>
+	  },
+	  {
+		path: "/upload",
+		element: <NewsArticleForm/>
 	  }
     ],
   },
