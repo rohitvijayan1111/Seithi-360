@@ -33,7 +33,7 @@ const QuizSection = ({ isOpen, onClose }) => {
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
-        const response = await axios.post("http://localhost:5000/generate-quiz", { newsData });
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND}/generate-quiz`, { newsData });
         setQuiz(response.data.quiz);
       } catch (error) {
         console.error("Error fetching quiz:", error);

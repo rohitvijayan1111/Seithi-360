@@ -12,7 +12,7 @@ const BasedOnYourSearch = () => {
   // Fetch top searches
   const fetchTopSearches = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/top-searches/${userId}`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/top-searches/${userId}`);
       return response.data.topSearches || [];
     } catch (error) {
       console.error("Error fetching top searches:", error);
@@ -23,7 +23,7 @@ const BasedOnYourSearch = () => {
   // Fetch articles based on a query
   const fetchScrapedArticles = async (query) => {
     try {
-      const response = await axios.get("http://localhost:5000/scrape3", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
         params: { q: query },
       });
       return response.data.articles || [];

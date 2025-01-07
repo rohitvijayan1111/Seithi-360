@@ -346,6 +346,8 @@ const OthersContent = () => {
   const [districtNews, setDistrictNews] = useState([]);
   const [areaLoading, setAreaLoading] = useState(false);
   const [districtLoading, setDistrictLoading] = useState(false);
+  const [article, setArticle] = useState(null); 
+  const [error, setError] = useState(null);
 
   const formatArticles = (articles) => 
     articles.map((article) => ({
@@ -359,7 +361,7 @@ const OthersContent = () => {
     try {
       setAreaLoading(true);
       const area = sessionStorage.getItem("areaNews") || "Thiruvanmiyur News";
-      const response = await axios.get("http://localhost:5000/scrape3", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
         params: { q: area },
       });
       const articles = formatArticles(response.data.articles || []);
@@ -375,7 +377,7 @@ const OthersContent = () => {
   const fetchDistrictArticles = async (district) => {
     try {
       setDistrictLoading(true);
-      const response = await axios.get("http://localhost:5000/scrape3", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
         params: { q: district },
       });
       const articles = formatArticles(response.data.articles || []);
@@ -411,11 +413,74 @@ const OthersContent = () => {
       fetchDistrictArticles(searchTerm);
     }
   };
+  const district = sessionStorage.getItem("district");
+  console.log(district);
+
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        
+        const response = await fetch(`/api/news-articles/${district}`);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+        const data = await response.json();
+        setArticle(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchArticle();
+  }, [district]);
 
   return (
     <div className="text-lg text-yellow-600">
       <h2 className="text-2xl font-bold mb-4">What's Happening in Your Area?</h2>
       
+      {/* <div className="mb-6">
+  <h3 className="text-xl font-semibold mb-2">Trending News from Journalist</h3>
+  <p className="text-sm text-gray-600 mb-4">
+    Stay updated with the latest happenings shared by local residents.
+  </p>
+4
+  {areaLoading ? (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {[...Array(3)].map((_, index) => (
+        <SkeletonLoader key={index} />
+      ))}
+    </div>
+  ) : Array.isArray(article) && article.length > 0 ? (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {article.map((article, index) => (
+        <div
+          key={index}
+          className="border border-gray-300 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+        >
+          <img
+            src={article.image_path}
+            alt={article.title}
+            className="w-full h-48 object-cover rounded-md mb-4"
+          />
+          <h4 className="text-lg font-bold mb-2">{article.title}</h4>
+          <p className="text-sm text-gray-600 mb-2">{article.meta_tags}</p>
+          <p className="text-sm mb-4 line-clamp-3">{article.content}</p>
+          <p className="text-sm text-gray-500">
+            <strong>District:</strong> {article.district}
+          </p>
+          <p className="text-sm text-gray-500">
+            <strong>Created At:</strong>{" "}
+            {new Date(article.created_at).toLocaleString()}
+          </p>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p>No articles available.</p>
+  )}
+</div> */}
+
+
       <div className="mb-6">
         <h3 className="text-xl font-semibold mb-2">News from Local People</h3>
         <p className="text-sm text-gray-600 mb-4">
@@ -563,7 +628,7 @@ const Personalization = () => {
   // Fetch YouTube videos for specific sections
   const fetchYouTubeVideosForSection = async (section) => {
     try {
-      const response = await axios.get("http://localhost:5000/youtube-videos", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/youtube-videos`, {
         params: { query: section }
       });
       const vid=response.data.videos;
@@ -745,7 +810,7 @@ const Personalization = () => {
   // Fetch scraped articles for a specific interest
   const fetchScrapedArticles = async (query) => {
     try {
-      const response = await axios.get("http://localhost:5000/scrape3", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
         params: { q: query || "Trending News" },
       });
       return response.data.articles || [];

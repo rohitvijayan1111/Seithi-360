@@ -39,7 +39,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "Rithik@28raja",
+  password: "1207",
   database: "kynhood",
 });
 
@@ -146,20 +146,18 @@ app.post("/api/upload", upload.single("image"), (req, res) => {
   res.status(200).json({ imagePath: `/uploads/${req.file.filename}` });
 });
 
-app.post("/api/articles", (req, res) => {
-  const { title, content, metaTags, imagePath } = req.body;
-
+app.post('/api/articles', (req, res) => {
+  const { title, content,district, metaTags, imagePath } = req.body;
+  
   db.query(
-    "INSERT INTO news_articles (title, content, meta_tags, image_path) VALUES (?, ?, ?, ?)",
-    [title, content, metaTags, imagePath],
+    'INSERT INTO news_articles (title, content, meta_tags, image_path,district) VALUES (?, ?, ?, ?,?)',
+    [title, content, metaTags, imagePath,district],
     (err, results) => {
       if (err) {
         console.error(err);
         return res.status(500).send("Error inserting article");
       }
-      res
-        .status(201)
-        .json({ id: results.insertId, title, content, metaTags, imagePath });
+      res.status(201).json({ id: results.insertId, title, content, metaTags, imagePath,district });
     }
   );
 });
@@ -181,6 +179,22 @@ app.get("/api/news-articles/:id", (req, res) => {
   const query = "SELECT * FROM news_articles WHERE id = ?";
 
   db.query(query, [articleId], (err, results) => {
+    if (err) {
+      console.error("Error fetching article", err);
+      return res.status(500).send("Error fetching article");
+    }
+    if (results.length === 0) {
+      return res.status(404).send("Article not found");
+    }
+    res.json(results[0]);
+  });
+});
+
+app.get("/api/news-articles/:district", (req, res) => {
+  const district = req.params.district;
+  const query = "SELECT * FROM news_articles WHERE district = ?";
+
+  db.query(query, [district], (err, results) => {
     if (err) {
       console.error("Error fetching article", err);
       return res.status(500).send("Error fetching article");
@@ -490,7 +504,7 @@ app.post("/login", (req, res) => {
 const getImageUrl = async (url) => {
   try {
     const response = await axios.get(
-      `http://localhost:5000/resolve-image-url?url=${url}`
+      `${process.env.REACT_APP_BACKEND}/resolve-image-url?url=${url}`
     );
     return response.data.imageUrl; // Get the actual image URL after redirect
   } catch (error) {
@@ -770,7 +784,7 @@ app.get("/scrapeforMail", async (req, res) => {
 
 // Fetch Latest News Article
 async function fetchNewsArticles(userId) {
-  const API_URL = `http://localhost:5000/scrapeforMail?userId=${userId}`;
+  const API_URL = `${process.env.REACT_APP_BACKEND}/scrapeforMail?userId=${userId}`;
   try {
     const response = await fetch(API_URL);
     if (!response.ok) {

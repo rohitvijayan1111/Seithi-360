@@ -38,7 +38,7 @@ export default function Example() {
 
   const fetchScrapedArticles = async (query) => {
     try {
-      const response = await axios.get("http://localhost:5000/scrape3", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
         params: { q: query || "Trending News" },
       });
       return response.data.articles || [];
@@ -80,7 +80,7 @@ export default function Example() {
     if (event.key === "Enter" || event.type === "click") {
       await loadLocalNews();
       try {
-        await axios.post("http://localhost:5000/update-search-history", {
+        await axios.post(`${process.env.REACT_APP_BACKEND}/update-search-history`, {
           userId:sessionStorage.getItem('userId'), // Replace with dynamic user ID
           searchQuery,
         });

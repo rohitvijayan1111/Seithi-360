@@ -55,7 +55,7 @@ const MainNewsComponent = () => {
 
   const fetchArticles = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/news-articles"); // Replace with your API endpoint
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/news-articles`); // Replace with your API endpoint
       setArticles(response.data);
     } catch (error) {
       console.error("Error fetching articles", error);
@@ -104,7 +104,7 @@ const MainNewsComponent = () => {
           link: feedData[index].link[0],
         };
 
-        await axios.post("http://localhost:5000/api/shareview", payload); // Replace with your backend URL
+        await axios.post(`${process.env.REACT_APP_BACKEND}/api/shareview`, payload); // Replace with your backend URL
         setAlertMessage("Your thoughts have been shared successfully!");
         setInputData((prevState) => ({
           ...prevState,
@@ -210,7 +210,7 @@ const MainNewsComponent = () => {
           articles.map((article) => {
             // Construct the full URL for the image
             const imageUrl = article.image_path
-              ? `http://localhost:5000${article.image_path}` // Use the correct URL
+              ? `${process.env.REACT_APP_BACKEND}${article.image_path}` // Use the correct URL
               : "";
   
             const pubDate = new Date(article.created_at).toLocaleDateString();

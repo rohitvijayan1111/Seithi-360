@@ -41,7 +41,7 @@ const PersonalizedPage = () => {
       // Fetch articles for each preference separately
       for (const preference of preferences) {
         const response = await fetch(
-          `http://localhost:5000/scrape3?q=${encodeURIComponent(preference)}`
+          `${process.env.REACT_APP_BACKEND}/scrape3?q=${encodeURIComponent(preference)}`
         );
         if (!response.ok) {
           throw new Error(`Error fetching news for ${preference}`);
@@ -55,7 +55,7 @@ const PersonalizedPage = () => {
       if (districts.length > 0) {
         const districtQuery = districts;
         const regionalResponse = await fetch(
-          `http://localhost:5000/scrape3?q=${encodeURIComponent(districtQuery)}`
+          `${process.env.REACT_APP_BACKEND}/scrape3?q=${encodeURIComponent(districtQuery)}`
         );
         if (regionalResponse.ok) {
           const regionalData = await regionalResponse.json();

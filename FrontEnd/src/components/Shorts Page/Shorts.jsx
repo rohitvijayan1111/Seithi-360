@@ -6,7 +6,7 @@ import axios from "axios";
 
 const fetchYouTubeVideosForSection = async (section) => {
   try {
-    const response = await axios.get("http://localhost:5000/youtube-videos", {
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND}/youtube-videos`, {
       params: { query: section || "Short News" },
     });
     return response.data.videos.map((video) => ({

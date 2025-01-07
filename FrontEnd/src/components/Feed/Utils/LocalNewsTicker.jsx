@@ -11,7 +11,7 @@ const LocalNewsTicker = () => {
   // Fetch articles from the server
   const fetchScrapedArticles = async (query) => {
     try {
-      const response = await axios.get("http://localhost:5000/scrape3", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
         params: { q: query || "Trending News" },
       });
       return response.data.articles || [];
