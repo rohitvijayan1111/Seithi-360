@@ -1,4 +1,4 @@
-# செய்தி360 (Seithi360) 💬
+![image](https://github.com/user-attachments/assets/6481599e-7e79-49ad-afab-7b850f99dca4)# செய்தி360 (Seithi360) 💬
 
 Seithi360 is a feature-rich news aggregator designed to empower communities by curating accurate, personalized news from verified sources. Leveraging custom web scraping and trusted APIs, the platform categorizes content, delivers multi-language support, and keeps users informed through tailored email updates. It prioritizes user preferences, including location and interests, ensuring relevance and enhancing the overall news consumption experience.
 
@@ -38,7 +38,9 @@ Seithi360 is a feature-rich news aggregator designed to empower communities by c
 - ![image](https://github.com/user-attachments/assets/ccc478c4-c697-4827-84b2-764b35ce290c)
 
 - **User Profile**
-- ![Uploading image.png…]()
+- ![image](https://github.com/user-attachments/assets/8a6c7769-38d2-45cc-9f6c-dca8f2285d7b)
+
+
 
 
 
