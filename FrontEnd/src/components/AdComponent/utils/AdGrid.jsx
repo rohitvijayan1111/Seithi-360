@@ -1,9 +1,8 @@
 import React from "react";
 import Slider from "react-slick";
-import AdComponent from "../AdComponent"; // Adjust the import path as necessary
+import AdComponent from "../AdComponent";
 
 const AdGrid = () => {
-  // Sample data for ads
   const ads = [
     {
       id: 1,
@@ -37,10 +36,10 @@ const AdGrid = () => {
       imageUrl:
         "https://th.bing.com/th/id/R.8f5b1996190745d7e284533f638dc651?rik=Z3fra0hEgIKo7Q&riu=http%3a%2f%2fonedollargraphics.com%2fwp-content%2fuploads%2fedd%2f2017%2f03%2fFashion-Clearance-Sale-Web-Banner-Ad-Designs-17-Sizes-768x427.png&ehk=CDQ6qLGysv%2fHiseqFPPPjUjC86X%2fuKqhhofz0%2fNawsM%3d&risl=&pid=ImgRaw&r=0",
     },
-    // Add more ads as needed
+
   ];
 
-  // Slider settings
+
   const settings = {
     dots: true,
     infinite: true,

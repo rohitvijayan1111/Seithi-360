@@ -52,11 +52,11 @@ const newsItems = [
 
 const marqueeVariants = {
   animate: {
-    x: ["100%", "-100%"], // Scroll from right to left
+    x: ["100%", "-100%"], 
     transition: {
       x: {
         repeat: Infinity,
-        duration: 30, // Slow down the scroll speed
+        duration: 30, 
         ease: "linear",
       },
     },
@@ -75,7 +75,6 @@ export default function AboutUsSection() {
         </p>
       </div>
 
-      {/* Scrolling Cards */}
       <div className="relative mt-12 overflow-hidden">
         <motion.div
           className="flex space-x-6"

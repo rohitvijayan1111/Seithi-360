@@ -49,7 +49,6 @@ export default function Example() {
   };
    
        const loadLocalNews = async () => {
-    // Immediately show the popup and start loading
     setShowResults(true);
     setLoading(true);
 
@@ -57,7 +56,6 @@ export default function Example() {
       const query = searchQuery ? `${searchQuery}` : "Trending News";
       const articles = await fetchScrapedArticles(query);
 
-      // Transform articles into the required format
       const formattedArticles = articles.map((article) => ({
         title: article.title,
         description: article.source || "No description available",
@@ -68,9 +66,7 @@ export default function Example() {
       setSearchResults(formattedArticles);
     } catch (error) {
       console.error("Error loading news:", error);
-      // Optionally set an error state
     } finally {
-      // Stop loading regardless of success or failure
       setLoading(false);
     }
   };
@@ -81,7 +77,7 @@ export default function Example() {
       await loadLocalNews();
       try {
         await axios.post(`${process.env.REACT_APP_BACKEND}/update-search-history`, {
-          userId:sessionStorage.getItem('userId'), // Replace with dynamic user ID
+          userId:sessionStorage.getItem('userId'),
           searchQuery,
         });
         console.log("Search logged successfully");
@@ -99,7 +95,6 @@ export default function Example() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
-              {/* Logo */}
               <div className="shrink-0">
                 <img
                   alt="Your Company"
@@ -108,7 +103,6 @@ export default function Example() {
                 />
               </div>
 
-              {/* Navigation Links for larger screens */}
               <div className="hidden md:block ml-10 flex items-baseline space-x-4">
                 {navigation.map((item) => (
                   <a
@@ -129,10 +123,7 @@ export default function Example() {
               </div>
             </div>
  
-            {/* Search Bar, Profile, and Notification Icons */}
             <div className="flex items-center space-x-6">
-              {/* Search Bar (Visible on all screen sizes) */}
-               {/* Search */}
             <div className="relative w-full max-w-xs sm:max-w-sm md:w-64">
               <input
                 type="text"
@@ -150,7 +141,6 @@ export default function Example() {
               </button>
             </div>
 
-              {/* Profile dropdown */}
               <Menu as="div" className="relative ml-3">
                 <div>
                   <MenuButton className="flex items-center rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white">
@@ -177,7 +167,6 @@ export default function Example() {
               </Menu>
             </div>
 
-            {/* Mobile Menu Button */}
             <div className="-mr-2 flex md:hidden">
               <DisclosureButton className="group inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-200 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white">
                 <span className="sr-only">Open main menu</span>
@@ -194,7 +183,6 @@ export default function Example() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         <DisclosurePanel className="md:hidden">
           <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
             {navigation.map((item) => (
@@ -259,7 +247,6 @@ export default function Example() {
           </div>
         </DisclosurePanel>
       </Disclosure>
-        {/* Pop-Up Results */}
         {showResults && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
     <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] p-6 overflow-y-auto">

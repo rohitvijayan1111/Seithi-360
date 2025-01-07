@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 
 export default function Brand() {
-  // Variants for the logo animations
   const fadeInUp = {
     hidden: { opacity: 0, y: 50, rotate: 2 },
     visible: {
@@ -17,7 +16,7 @@ export default function Brand() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2, // Delay between child animations
+        staggerChildren: 0.2,
       },
     },
   };
@@ -25,7 +24,6 @@ export default function Brand() {
   return (
     <div className="bg-gray-50 py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Heading with subtle animation */}
         <motion.h2
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -43,14 +41,12 @@ export default function Brand() {
           Bringing you the latest from credible platforms. Still Counting...
         </motion.p>
 
-        {/* Top News Sources */}
         <motion.div
           variants={container}
           initial="hidden"
           animate="visible"
           className="mx-auto mt-10 grid max-w-lg grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 items-center lg:max-w-none"
         >
-          {/* Google News */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col items-center"
@@ -67,7 +63,6 @@ export default function Brand() {
             </p>
           </motion.div>
 
-          {/* The Times of India */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col items-center"
@@ -84,7 +79,6 @@ export default function Brand() {
             </p>
           </motion.div>
 
-          {/* Hindustan Times */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col items-center"
@@ -101,7 +95,6 @@ export default function Brand() {
             </p>
           </motion.div>
 
-          {/* NDTV */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col items-center"
@@ -116,7 +109,6 @@ export default function Brand() {
             <p className="mt-4 text-lg font-semibold text-gray-800">NDTV</p>
           </motion.div>
 
-          {/* India Today */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col items-center"
@@ -134,7 +126,6 @@ export default function Brand() {
           </motion.div>
         </motion.div>
 
-        {/* Local News Sources */}
         <motion.h3
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -149,7 +140,6 @@ export default function Brand() {
           animate="visible"
           className="mx-auto mt-10 grid max-w-lg grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 items-center lg:max-w-none"
         >
-          {/* Polimer */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col items-center"
@@ -164,7 +154,6 @@ export default function Brand() {
             <p className="mt-4 text-lg font-semibold text-gray-800">Polimer</p>
           </motion.div>
 
-          {/* Thinathanthi */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col items-center"
@@ -181,7 +170,6 @@ export default function Brand() {
             </p>
           </motion.div>
 
-          {/* Puthiyathalamurai */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col items-center"
@@ -198,7 +186,6 @@ export default function Brand() {
             </p>
           </motion.div>
 
-          {/* Dinamalar */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col items-center"
@@ -215,7 +202,6 @@ export default function Brand() {
             </p>
           </motion.div>
 
-          {/* Maalaimalar */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col items-center"
@@ -232,7 +218,6 @@ export default function Brand() {
             </p>
           </motion.div>
 
-          {/* Dinamani */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col items-center"
@@ -248,7 +233,6 @@ export default function Brand() {
           </motion.div>
         </motion.div>
 
-        {/* Footer with fade-in effect */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

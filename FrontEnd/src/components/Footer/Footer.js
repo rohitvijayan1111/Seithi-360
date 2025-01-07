@@ -5,8 +5,8 @@ const Footer = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "#f5f5fa", // Light purple/white
-        color: "#4a148c", // Subtle purple for text
+        backgroundColor: "#f5f5fa", 
+        color: "#4a148c", 
         py: 6,
         mt: 4,
         borderTop: "1px solid #e0e0e0",
@@ -14,7 +14,6 @@ const Footer = () => {
     >
       <Container maxWidth="lg">
         <Grid container spacing={4}>
-          {/* Logo and About Section */}
           <Grid item xs={12} md={4}>
             <Typography
               variant="h4"
@@ -33,7 +32,6 @@ const Footer = () => {
             </Typography>
           </Grid>
 
-          {/* Quick Links Section */}
           <Grid item xs={12} md={4}>
             <Typography
               variant="h6"
@@ -74,7 +72,6 @@ const Footer = () => {
             </Box>
           </Grid>
 
-          {/* Contact Section */}
           <Grid item xs={12} md={4}>
             <Typography
               variant="h6"

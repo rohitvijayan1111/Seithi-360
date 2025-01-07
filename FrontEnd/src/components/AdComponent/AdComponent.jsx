@@ -3,7 +3,6 @@ import React from "react";
 const AdComponent = ({ ad }) => {
   return (
     <div className="max-w-full w-full bg-white shadow-lg rounded-lg overflow-hidden">
-      {/* Ad Image Section */}
       <div className="relative h-48 bg-gray-200">
         <img
           src={ad.imageUrl}
@@ -16,7 +15,6 @@ const AdComponent = ({ ad }) => {
         </p>
       </div>
 
-      {/* Ad Content Section */}
       <div className="p-4 space-y-4">
         <h3 className="text-lg font-semibold text-gray-800 truncate">
           {ad.title}

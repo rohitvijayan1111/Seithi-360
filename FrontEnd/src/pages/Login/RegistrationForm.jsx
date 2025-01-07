@@ -112,7 +112,6 @@ const RegistrationForm = () => {
     event.preventDefault();
 
     try {
-      // Step 1: Register the user
       const response = await fetch(`${process.env.REACT_APP_BACKEND}/register`, {
         method: "POST",
         headers: {
@@ -124,14 +123,13 @@ const RegistrationForm = () => {
       if (response.ok) {
         alert("Registration successful!");
 
-        // Step 2: Send a confirmation email
         const emailResponse = await fetch(`${process.env.REACT_APP_BACKEND}/send-email`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            to: formData.email, // User's email address
+            to: formData.email, 
             subject: "கணினி_X's செய்தி360 User Registration",
             text: "Congratulations! Your account has been successfully registered with செய்தி360. We are excited to bring you personalized and local news tailored to your preferences. Stay informed and connected with the stories that matter most to you. Welcome to the செய்தி360 community! ",
           }),
@@ -146,7 +144,6 @@ const RegistrationForm = () => {
           );
         }
 
-        // Reset form fields
         setFormData({
           name: "",
           email: "",
@@ -168,7 +165,7 @@ const RegistrationForm = () => {
   };
 
   const handleLogin = async (event) => {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault(); 
 
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND}/login`, {
@@ -187,7 +184,6 @@ const RegistrationForm = () => {
         sessionStorage.setItem("languages", data.languages);
         sessionStorage.setItem("district", data.district);
         navigate("/home");
-        // Handle success (e.g., redirect to dashboard or show success message)
       } else {
         console.error("Login failed:", data.message);
         alert("Login failed. Please try again.");

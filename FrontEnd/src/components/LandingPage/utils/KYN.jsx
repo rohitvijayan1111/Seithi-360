@@ -11,13 +11,12 @@ export default function LogoDisplay() {
           viewport={{ once: true }}
           transition={{ duration: 1 }}
         >
-          {/* KYNhood Logo */}
           <div className="flex items-center justify-center">
             <motion.img
-              src="https://www.kynhood.com/illustrations/logo.png" // Add the actual path to your KYNhood logo
+              src="https://www.kynhood.com/illustrations/logo.png"
               alt="KYNhood Logo"
-              width={160} // Adjust the width for a more prominent display
-              height={60} // Adjust the height to maintain the logo aspect ratio
+              width={160} 
+              height={60} 
               className="rounded-lg shadow-md"
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -35,13 +34,12 @@ export default function LogoDisplay() {
             KYN X செய்தி360
           </motion.p>
 
-          {/* Seithi360 Logo */}
           <div className="flex items-center justify-center">
             <motion.img
-              src="seithi360-logo-bg.png" // Add the actual path to your Seithi360 logo
+              src="seithi360-logo-bg.png" 
               alt="Seithi360 Logo"
-              width={160} // Adjust the width to make both logos similar in size
-              height={60} // Adjust the height for consistency
+              width={160} 
+              height={60} 
               className="rounded-lg shadow-md"
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}

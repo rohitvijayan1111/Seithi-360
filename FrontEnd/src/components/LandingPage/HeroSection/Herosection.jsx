@@ -140,15 +140,13 @@ export default function HeroSection() {
           className="mx-auto max-w-7xl py-32 sm:py-48 lg:py-56"
         >
           <div className="flex flex-col lg:flex-row items-center justify-between space-y-6 lg:space-y-0">
-            {/* Logo Section */}
             <motion.img
               src="seithi360-logo-bg.png"
               variants={fadeInUp}
-              className="h-25 w-25 sm:h-20 md:h-24 lg:h-28 " // Responsive logo size
+              className="h-25 w-25 sm:h-20 md:h-24 lg:h-28 " 
               alt="Seithi360"
             />
 
-            {/* Title and Description */}
             <div className="text-center lg:text-left">
               <motion.h1
                 variants={fadeInUp}
@@ -167,7 +165,6 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Buttons */}
           <motion.div
             variants={fadeInUp}
             className="mt-10 flex items-center justify-center gap-x-6"

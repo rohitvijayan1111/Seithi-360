@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Import useParams to access URL params
+import { useParams } from "react-router-dom"; 
 import axios from "axios";
-import Example from "../components/Feed/Header/Header"; // Header component
-import Sidebar from "../components/Feed/Utils/Sidebar"; // Sidebar component
+import Example from "../components/Feed/Header/Header"; 
+import Sidebar from "../components/Feed/Utils/Sidebar"; 
 
 const UserPostsPage = () => {
-  const { hashtag } = useParams(); // Get the hashtag from the URL
+  const { hashtag } = useParams(); 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -23,7 +23,7 @@ const UserPostsPage = () => {
     };
 
     fetchPosts();
-  }, [hashtag]); // Fetch posts whenever the hashtag changes
+  }, [hashtag]);
 
   if (loading) {
     return (
@@ -35,14 +35,10 @@ const UserPostsPage = () => {
 
   return (
     <div className="bg-gray-50 text-gray-900 min-h-screen">
-      {/* Header Section */}
       <Example />
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto p-4">
-        {/* Grid Layout: Main News and Sidebar */}
         <section className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          {/* Main News Component (Left) */}
           <div className="lg:col-span-4">
             <div className="bg-white p-6 sm:p-8 lg:p-12">
               <h1 className="text-3xl font-semibold text-center mb-6">Trending Posts related to  #{hashtag}</h1>
@@ -100,12 +96,10 @@ const UserPostsPage = () => {
             </div>
           </div>
 
-          {/* Sidebar (Right) */}
           <div className="hidden lg:block">
             <Sidebar />
           </div>
 
-          {/* Responsive Sidebar Toggle */}
           <div className="block lg:hidden">
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -128,7 +122,6 @@ const UserPostsPage = () => {
         </section>
       </main>
 
-      {/* Footer */}
       <footer className="bg-gray-800 text-white py-4 mt-8 text-center">
         <p>&copy; 2025 NewsFeed. All rights reserved.</p>
       </footer>

@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import axios from "axios"; // Ensure axios is installed and imported
+import axios from "axios"; 
 
 const LocalNewsTicker = () => {
   const [localNews, setLocalNews] = useState([]);
   const district = sessionStorage.getItem("district");
 
-  // Fetch articles from the server
   const fetchScrapedArticles = async (query) => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
@@ -26,7 +25,6 @@ const LocalNewsTicker = () => {
       const query = district ? `${district} News` : "Trending News";
       const articles = await fetchScrapedArticles(query);
 
-      // Transform articles into the required format
       const formattedArticles = articles.map((article) => ({
         title: article.title,
         description: article.source || "No description available",

@@ -15,7 +15,6 @@ export default function ContactUs() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic (e.g., send the form data to an API)
     console.log("Form Submitted:", formData);
   };
 
@@ -37,7 +36,6 @@ export default function ContactUs() {
           </p>
         </motion.div>
 
-        {/* Contact Form */}
         <motion.form
           onSubmit={handleSubmit}
           className="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-2xl space-y-6"
@@ -45,7 +43,6 @@ export default function ContactUs() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          {/* Name Input */}
           <div>
             <label
               htmlFor="name"
@@ -65,7 +62,6 @@ export default function ContactUs() {
             />
           </div>
 
-          {/* Email Input */}
           <div>
             <label
               htmlFor="email"
@@ -85,7 +81,6 @@ export default function ContactUs() {
             />
           </div>
 
-          {/* Message Textarea */}
           <div>
             <label
               htmlFor="message"
@@ -105,7 +100,6 @@ export default function ContactUs() {
             />
           </div>
 
-          {/* Submit Button */}
           <div>
             <button
               type="submit"
@@ -116,7 +110,6 @@ export default function ContactUs() {
           </div>
         </motion.form>
 
-        {/* Footer Section */}
         <div className="mt-12 text-center">
           <p className="text-lg text-gray-600">
             Or reach us at{" "}

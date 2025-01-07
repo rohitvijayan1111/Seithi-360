@@ -21,7 +21,6 @@ const Sidebar = () => {
     return text
       .split("\n")
       .map((line, index) => {
-        // Check if the line contains category names wrapped in **
         if (line.startsWith("**") && line.endsWith("**")) {
           return (
             <React.Fragment key={index}>
@@ -55,7 +54,7 @@ const Sidebar = () => {
   }, []);
 
   const handleHashtagClick = (hashtag) => {
-    navigate(`/post/${hashtag}`); // Navigate to the UserPostsPage with the clicked hashtag
+    navigate(`/post/${hashtag}`); 
   };
 
   useEffect(() => {
@@ -63,12 +62,11 @@ const Sidebar = () => {
       try {
         const textBase = [];
 
-        // Fetch news for all categories
         for (const category in categoryFeedUrls) {
           const response = await fetch(categoryFeedUrls[category]);
           const data = await response.json();
 
-          const items = data.items.slice(0, 5); // Get top 5 news items
+          const items = data.items.slice(0, 5); 
           const categorySummary = `${category} News:\n${items
             .map((item) => `${item.title}: ${item.content_text || "No description available"}`)
             .join("\n")}`;
@@ -76,10 +74,8 @@ const Sidebar = () => {
           textBase.push(categorySummary);
         }
 
-        // Combine all category summaries into a single string
         const fullTextBase = textBase.join("\n\n");
 
-        // Send the combined text to backend for summarization
         const summaryResponse = await fetch(`${process.env.REACT_APP_BACKEND}/summarize-news`, {
           method: "POST",
           headers: {
@@ -117,7 +113,7 @@ const Sidebar = () => {
             <li
               key={index}
               className="flex justify-between items-start -mx-7 p-2 hover:bg-gray-200 rounded-md cursor-pointer transition"
-              onClick={() => handleHashtagClick(hashtag.hashtag)} // Add click event to navigate
+              onClick={() => handleHashtagClick(hashtag.hashtag)} 
             >
               <div className="flex items-center space-x-2">
                 <FaHashtag className="text-blue-500 text-xl" />
@@ -152,14 +148,13 @@ const Sidebar = () => {
       
       <div
         className="bg-white rounded-lg shadow-lg p-4 cursor-pointer hover:bg-gray-100"
-        onClick={() => setIsQuizOpen(true)} // Open the quiz modal
+        onClick={() => setIsQuizOpen(true)} 
       >
         <h2 className="text-lg font-bold mb-2">Puzzle Section</h2>
         <h3 className="text-lg font-bold mb-2">Quiz</h3>
         <p className="text-sm text-gray-600">Solve today's Quiz!</p>
       </div>
 
-      {/* QuizSection Modal */}
       <QuizSection isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
       
     </div>

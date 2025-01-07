@@ -29,7 +29,6 @@ const QuizSection = ({ isOpen, onClose }) => {
     }
   ];
 
-  // Fetch quiz data from backend
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
@@ -42,22 +41,19 @@ const QuizSection = ({ isOpen, onClose }) => {
     fetchQuiz();
   }, []);
 
-  // Handle user selecting an option
   const handleOptionChange = (questionIndex, option) => {
     setUserAnswers({ ...userAnswers, [questionIndex]: option });
   };
 
-  // Submit quiz and evaluate results
   const handleSubmit = () => {
     setSubmitted(true);
   };
 
-  if (!isOpen) return null; // Don't render if modal is not open
+  if (!isOpen) return null; 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-full sm:w-[90%] md:w-[70%] lg:w-[50%] max-w-lg mx-4 sm:mx-8 p-6 relative overflow-hidden">
-        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"

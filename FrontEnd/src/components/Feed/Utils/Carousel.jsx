@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
-import { RingLoader } from "react-spinners"; // Importing a loading spinner
+import { RingLoader } from "react-spinners"; 
 
 const TopNewsCarousel = () => {
   const [topNews, setTopNews] = useState([]);
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -20,10 +20,10 @@ const TopNewsCarousel = () => {
           url: item.url,
         }));
         setTopNews(items);
-        setLoading(false); // Set loading to false after data is fetched
+        setLoading(false); 
       } catch (error) {
         console.error("Failed to fetch news:", error);
-        setLoading(false); // Ensure loading is stopped if there is an error
+        setLoading(false); 
       }
     };
 
@@ -41,19 +41,19 @@ const TopNewsCarousel = () => {
     arrows: false,
     responsive: [
       {
-        breakpoint: 640, // Mobile screens
+        breakpoint: 640, 
         settings: {
           slidesToShow: 1,
         },
       },
       {
-        breakpoint: 768, // Tablet screens
+        breakpoint: 768,
         settings: {
           slidesToShow: 1,
         },
       },
       {
-        breakpoint: 1024, // Desktop screens
+        breakpoint: 1024, 
         settings: {
           slidesToShow: 1,
         },
@@ -74,7 +74,6 @@ const TopNewsCarousel = () => {
               key={index}
               className="relative group rounded-xl overflow-hidden shadow-xl transition-all duration-500 hover:scale-105 hover:shadow-2xl"
             >
-              {/* Image */}
               <div className="w-full h-96 relative">
                 <img
                   src={news.imageUrl || "https://via.placeholder.com/800x500"}
@@ -83,7 +82,6 @@ const TopNewsCarousel = () => {
                 />
               </div>
 
-              {/* Text overlay */}
               <div className="absolute bottom-0 left-0 bg-gradient-to-t from-black to-transparent w-full p-6 text-white opacity-80 group-hover:opacity-100 transition-opacity rounded-xl">
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-3">
                   {news.title}
