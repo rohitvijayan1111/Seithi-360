@@ -21,6 +21,9 @@ Seithi360 is a feature-rich news aggregator designed to empower communities by c
 
 - **Personalized Feeds**: Users receive tailored news articles based on their preferences, district, and location.
 - ![image](https://github.com/user-attachments/assets/611c5bae-4afd-4998-8c01-17ef512a75b9)
+![image](https://github.com/user-attachments/assets/7c231e1e-d6de-4d0c-b222-0ef2af40f120)
+![image](https://github.com/user-attachments/assets/2aa463ec-f24d-4941-89e8-1fe29cd6e3f1)
+![image](https://github.com/user-attachments/assets/eba80291-8538-47b9-a19b-bedd99c6d7d5)
 
 
 - **Email Updates**: Automatic email notifications with articles matching user interests.
