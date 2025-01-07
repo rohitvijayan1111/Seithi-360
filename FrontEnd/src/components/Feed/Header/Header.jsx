@@ -13,17 +13,23 @@ import axios from "axios";
 import { useEffect,useState } from "react";
 import GoogleTranslate from "../../GoogleTranslate";
 const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
+  name: sessionStorage.getItem("name") || "Guest",
+  email: sessionStorage.getItem("email") || "guest@example.com",
   imageUrl:
     "https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg",
 };
 
-const navigation = [{name:"Home",href:"/home",current:false},{ name: "Your Arena", href: "/yourfeed", current: false },{name:"Communities",href:"/communities",current:false},{name:"Shorts",href:"/shorts",current:false}];
+const navigation = [{name:"Home",href:"/home",current:false},{ name: "Your Arena", href: "/yourfeed", current: false },{name:"Communities",href:"/communities",current:false},{name:"Shorts",href:"/shorts",current:false},{name:"Upload", href:"/upload",current:false}];
 
 const userNavigation = [
   { name: "Your Profile", href: "/user-profile", current: false },
-  { name: "Sign out", href: "#" },
+  {
+    name: "Sign out",
+    href: "/seithi360",
+    handleClick: () => {
+      sessionStorage.clear(); // Clear session storage
+    },
+  },
 ];
 
 function classNames(...classes) {
