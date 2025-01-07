@@ -39,7 +39,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "pass123",
+  password: "Rithik@28raja",
   database: "kynhood",
 });
 
@@ -498,6 +498,32 @@ const getImageUrl = async (url) => {
     return null;
   }
 };
+
+app.post("/send-email", async (req, res) => {
+   const transporter = nodemailer.createTransport({
+     service: "gmail",
+     auth: {
+       user: "rohitvijayandrive@gmail.com",
+       pass: "kfzxznsmouxvszel",
+     },
+   });
+  const { subject, to, text } = req.body;
+  console.log(req.body);
+  const mailOptions = {
+    from: { name: "RMKEC UPDATES", address: "rohitvijayandrive@gmail.com" },
+    to: to,
+    subject: `${subject}`,
+    text: `${text}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).send("Form created and email sent");
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).send("Error creating form or sending email: " + error);
+  }
+});
 
 app.get("/scrape3", async (req, res) => {
   try {

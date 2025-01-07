@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import Example from "../Feed/Header/Header";
 import Sidebar from "./utils/SidebarC";
 import axios from "axios";
@@ -101,6 +102,11 @@ const Community = () => {
     }
   }, [selectedCommunity]);
 
+  const handleJoinCommunity = () => {
+    const userName = sessionStorage.getItem("name") || "User";
+    toast.success(`${userName} has joined ${selectedCommunity.name} Community!`);
+  };
+
   // Rendering community details and posts
   const renderCommunityDetails = () => {
     if (!selectedCommunity) {
@@ -118,6 +124,7 @@ const Community = () => {
     }
 
     return (
+      
       <div className="bg-white shadow-md rounded-lg p-6 mt-6">
         <h1 className="text-3xl font-bold text-blue-600">
           {selectedCommunity.name}
@@ -126,7 +133,10 @@ const Community = () => {
         <p className="mt-4 text-gray-600">
           <strong>Members:</strong> {selectedCommunity.members}
         </p>
-        <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600 transition">
+        <button
+          onClick={handleJoinCommunity}
+          className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600 transition"
+        >
           Join Community
         </button>
         <div className="mt-6">
@@ -162,6 +172,7 @@ const Community = () => {
 
   return (
     <>
+    <ToastContainer />
       <Example />
       <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100 text-gray-800">
         <div className="lg:w-64 w-full lg:left-0 lg:top-0 lg:h-full lg:flex lg:flex-col bg-white mt-4 shadow-md lg:block lg:mt-0 z-50">
