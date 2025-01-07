@@ -40,7 +40,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "Rithik@28raja",
+  password: "1207",
   database: "kynhood",
 });
 
@@ -148,17 +148,17 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
 });
 
 app.post('/api/articles', (req, res) => {
-  const { title, content, metaTags, imagePath } = req.body;
+  const { title, content,district, metaTags, imagePath } = req.body;
   
   db.query(
-    'INSERT INTO news_articles (title, content, meta_tags, image_path) VALUES (?, ?, ?, ?)',
-    [title, content, metaTags, imagePath],
+    'INSERT INTO news_articles (title, content, meta_tags, image_path,district) VALUES (?, ?, ?, ?,?)',
+    [title, content, metaTags, imagePath,district],
     (err, results) => {
       if (err) {
         console.error(err);
         return res.status(500).send('Error inserting article');
       }
-      res.status(201).json({ id: results.insertId, title, content, metaTags, imagePath });
+      res.status(201).json({ id: results.insertId, title, content, metaTags, imagePath,district });
     }
   );
 });
@@ -178,6 +178,22 @@ app.get("/api/news-articles/:id", (req, res) => {
   const query = "SELECT * FROM news_articles WHERE id = ?";
 
   db.query(query, [articleId], (err, results) => {
+    if (err) {
+      console.error("Error fetching article", err);
+      return res.status(500).send("Error fetching article");
+    }
+    if (results.length === 0) {
+      return res.status(404).send("Article not found");
+    }
+    res.json(results[0]);
+  });
+});
+
+app.get("/api/news-articles/:district", (req, res) => {
+  const district = req.params.district;
+  const query = "SELECT * FROM news_articles WHERE district = ?";
+
+  db.query(query, [district], (err, results) => {
     if (err) {
       console.error("Error fetching article", err);
       return res.status(500).send("Error fetching article");

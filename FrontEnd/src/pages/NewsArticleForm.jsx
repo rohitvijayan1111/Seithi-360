@@ -5,6 +5,7 @@ const NewsArticleForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [metaTags, setMetaTags] = useState('');
+  const [district, setDistrict] = useState('');
   const [image, setImage] = useState(null);
 
   const handleImageChange = (e) => setImage(e.target.files[0]);
@@ -15,13 +16,14 @@ const NewsArticleForm = () => {
     formData.append('image', image);
     formData.append('title', title);
     formData.append('content', content);
+    formData.append('district', district);
     formData.append('metaTags', metaTags);
 
     try {
       const imageResponse = await axios.post("http://localhost:5000/api/upload", formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       const imagePath = imageResponse.data.imagePath;
 
-      await axios.post('http://localhost:5000/api/articles', { title, content, metaTags, imagePath });
+      await axios.post('http://localhost:5000/api/articles', { title, content,district, metaTags, imagePath });
       alert('Article posted successfully!');
     } catch (error) {
       console.error(error);
@@ -42,7 +44,7 @@ const NewsArticleForm = () => {
               placeholder="Enter article title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 bg-white text-black-700 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full border border-gray-300 bg-white text-black rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               required
             />
           </div>
@@ -54,7 +56,7 @@ const NewsArticleForm = () => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={6}
-              className="mt-1 block bg-white text-black-700 w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block bg-white text-black w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               required
             />
           </div>
@@ -66,7 +68,18 @@ const NewsArticleForm = () => {
               placeholder="Enter meta tags (comma separated)"
               value={metaTags}
               onChange={(e) => setMetaTags(e.target.value)}
-              className="mt-1 bg-white text-black-700 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 bg-white text-black block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="metaTags" className="block text-sm font-medium text-gray-700">Location</label>
+            <input
+              id="metaTags"
+              type="text"
+              placeholder="Enter the location"
+              value={district}
+              onChange={(e) => setDistrict(e.target.value)}
+              className="mt-1 bg-white text-black block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
           </div>
           <div>
@@ -76,7 +89,7 @@ const NewsArticleForm = () => {
               type="file"
               accept="image/*"
               onChange={handleImageChange}
-              className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-gray-300 file:text-sm file:font-medium file:bg-gray-100 file:hover:bg-gray-200"
+              className="mt-1 block w-full text-black text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-gray-300 file:text-sm file:font-medium file:bg-gray-100 file:hover:bg-gray-200"
               required
             />
           </div>
