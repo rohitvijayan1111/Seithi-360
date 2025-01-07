@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import MainNewsComponent from "./Utils/MainNews";
 import AdGrid from "../AdComponent/utils/AdGrid";
+import BasedOnYourSearch from "./Utils/BasedOnYourSearch";
 
 const Feed = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -31,6 +32,12 @@ const Feed = () => {
             Local News {district ? `- ${district}` : ""}
           </h2>
           <LocalNewsTicker />
+        </section>
+        <section className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">
+            Based On Your Search
+          </h2>
+          <BasedOnYourSearch/>
         </section>
 
         {/* Grid Layout: Main News and Sidebar */}

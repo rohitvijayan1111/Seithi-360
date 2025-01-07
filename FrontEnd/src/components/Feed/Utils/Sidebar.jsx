@@ -58,50 +58,50 @@ const Sidebar = () => {
     navigate(`/post/${hashtag}`); // Navigate to the UserPostsPage with the clicked hashtag
   };
 
-  // useEffect(() => {
-  //   const fetchAndSummarizeNews = async () => {
-  //     try {
-  //       const textBase = [];
+  useEffect(() => {
+    const fetchAndSummarizeNews = async () => {
+      try {
+        const textBase = [];
 
-  //       // Fetch news for all categories
-  //       for (const category in categoryFeedUrls) {
-  //         const response = await fetch(categoryFeedUrls[category]);
-  //         const data = await response.json();
+        // Fetch news for all categories
+        for (const category in categoryFeedUrls) {
+          const response = await fetch(categoryFeedUrls[category]);
+          const data = await response.json();
 
-  //         const items = data.items.slice(0, 5); // Get top 5 news items
-  //         const categorySummary = `${category} News:\n${items
-  //           .map((item) => `${item.title}: ${item.content_text || "No description available"}`)
-  //           .join("\n")}`;
+          const items = data.items.slice(0, 5); // Get top 5 news items
+          const categorySummary = `${category} News:\n${items
+            .map((item) => `${item.title}: ${item.content_text || "No description available"}`)
+            .join("\n")}`;
 
-  //         textBase.push(categorySummary);
-  //       }
+          textBase.push(categorySummary);
+        }
 
-  //       // Combine all category summaries into a single string
-  //       const fullTextBase = textBase.join("\n\n");
+        // Combine all category summaries into a single string
+        const fullTextBase = textBase.join("\n\n");
 
-  //       // Send the combined text to backend for summarization
-  //       const summaryResponse = await fetch("http://localhost:5000/summarize-news", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ newsData: fullTextBase }),
-  //       });
+        // Send the combined text to backend for summarization
+        const summaryResponse = await fetch("http://localhost:5000/summarize-news", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ newsData: fullTextBase }),
+        });
 
-  //       if (!summaryResponse.ok) {
-  //         throw new Error("Failed to get summary from backend");
-  //       }
+        if (!summaryResponse.ok) {
+          throw new Error("Failed to get summary from backend");
+        }
 
-  //       const { summary } = await summaryResponse.json();
-  //       setSummary(summary);
-  //     } catch (error) {
-  //       console.error("Error fetching or summarizing news:", error);
-  //       setError("Failed to fetch or summarize news.");
-  //     }
-  //   };
+        const { summary } = await summaryResponse.json();
+        setSummary(summary);
+      } catch (error) {
+        console.error("Error fetching or summarizing news:", error);
+        setError("Failed to fetch or summarize news.");
+      }
+    };
 
-  //   fetchAndSummarizeNews();
-  // }, []);
+    fetchAndSummarizeNews();
+  }, []);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
 
   return (
@@ -149,14 +149,15 @@ const Sidebar = () => {
         )}
       </div>
 
-      {/* Puzzle Section */}
-      {/* <div
+      
+      <div
         className="bg-white rounded-lg shadow-lg p-4 cursor-pointer hover:bg-gray-100"
         onClick={() => setIsQuizOpen(true)} // Open the quiz modal
       >
+        <h2 className="text-lg font-bold mb-2">Puzzle Section</h2>
         <h3 className="text-lg font-bold mb-2">Quiz</h3>
         <p className="text-sm text-gray-600">Solve today's Quiz!</p>
-      </div> */}
+      </div>
 
       {/* QuizSection Modal */}
       <QuizSection isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />

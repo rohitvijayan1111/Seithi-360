@@ -13,9 +13,9 @@ const cron = require("node-cron");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const geminiApiKey = "AIzaSyAdFW-tfACDH3xlRiB2TFir0RZpm9-RxCc";
 const googleAI = new GoogleGenerativeAI(geminiApiKey);
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 const geminiConfig = {
   temperature: 0.9,
@@ -29,8 +29,7 @@ const geminiModel = googleAI.getGenerativeModel({
   geminiConfig,
 });
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Middleware
 app.use(cors());
@@ -55,10 +54,10 @@ db.connect((err) => {
 
 function parseQuiz(rawQuiz) {
   const questions = [];
-  const lines = rawQuiz.split('\n').filter(line => line.trim() !== '');
+  const lines = rawQuiz.split("\n").filter((line) => line.trim() !== "");
   let currentQuestion = null;
 
-  lines.forEach(line => {
+  lines.forEach((line) => {
     line = line.trim();
 
     if (/^\d+\)/.test(line)) {
@@ -68,14 +67,14 @@ function parseQuiz(rawQuiz) {
         questions.push(currentQuestion);
       }
       // Start a new question
-      currentQuestion = { question: '', options: [], correctOption: '' };
-      currentQuestion.question = line.slice(line.indexOf(')') + 1).trim();
+      currentQuestion = { question: "", options: [], correctOption: "" };
+      currentQuestion.question = line.slice(line.indexOf(")") + 1).trim();
     } else if (/^\([a-d]\)/i.test(line)) {
       // Match the options (e.g., "(a)", "(b)", etc.)
       currentQuestion?.options.push(line);
-    } else if (line.startsWith('Correct answer:')) {
+    } else if (line.startsWith("Correct answer:")) {
       // Match the correct answer
-      const correctOption = line.slice(line.indexOf(':') + 1).trim();
+      const correctOption = line.slice(line.indexOf(":") + 1).trim();
       if (currentQuestion) {
         currentQuestion.correctOption = correctOption;
       }
@@ -90,7 +89,7 @@ function parseQuiz(rawQuiz) {
   return questions;
 }
 
-app.get('/api/trending-hashtags', (req, res) => {
+app.get("/api/trending-hashtags", (req, res) => {
   const query = `
     WITH split_hashtags AS (
       SELECT 
@@ -117,8 +116,8 @@ app.get('/api/trending-hashtags', (req, res) => {
 
   db.query(query, (err, results) => {
     if (err) {
-      console.error('Error fetching trending hashtags:', err);
-      res.status(500).send('Database error');
+      console.error("Error fetching trending hashtags:", err);
+      res.status(500).send("Database error");
       return;
     }
     res.json(results);
@@ -127,7 +126,7 @@ app.get('/api/trending-hashtags', (req, res) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, 'uploads');
+    const uploadPath = path.join(__dirname, "uploads");
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath);
     }
@@ -135,15 +134,15 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
-  }
+  },
 });
 
 const upload = multer({ storage });
 
 app.use(express.json());
 
-app.post('/api/upload', upload.single('image'), (req, res) => {
-  if (!req.file) return res.status(400).send('No file uploaded.');
+app.post("/api/upload", upload.single("image"), (req, res) => {
+  if (!req.file) return res.status(400).send("No file uploaded.");
   res.status(200).json({ imagePath: `/uploads/${req.file.filename}` });
 });
 
@@ -156,20 +155,22 @@ app.post('/api/articles', (req, res) => {
     (err, results) => {
       if (err) {
         console.error(err);
-        return res.status(500).send('Error inserting article');
+        return res.status(500).send("Error inserting article");
       }
       res.status(201).json({ id: results.insertId, title, content, metaTags, imagePath,district });
     }
   );
 });
 
-app.get('/api/news-articles', async (req, res) => {
+app.get("/api/news-articles", async (req, res) => {
   try {
-    const [articles] = await db.promise().query('SELECT * FROM news_articles ORDER BY created_at DESC');
+    const [articles] = await db
+      .promise()
+      .query("SELECT * FROM news_articles ORDER BY created_at DESC");
     res.json(articles);
   } catch (error) {
-    console.error('Error fetching news articles', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching news articles", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -215,7 +216,7 @@ app.get("/api/getPostsByHashtag/:hashtag", (req, res) => {
     WHERE hashtags LIKE ? 
     ORDER BY created_at DESC;
   `;
-  
+
   // Use parameterized queries to prevent SQL injection
   db.query(query, [`%${hashtag}%`], (err, results) => {
     if (err) {
@@ -226,18 +227,22 @@ app.get("/api/getPostsByHashtag/:hashtag", (req, res) => {
   });
 });
 
-app.post('/api/shareview', (req, res) => {
+app.post("/api/shareview", (req, res) => {
   const { username, thoughts, hashtags, image_url, title, link } = req.body;
 
   const query = `INSERT INTO ShareViews (username, thoughts, hashtags, image_url, title, link) VALUES (?, ?, ?, ?, ?, ?)`;
 
-  db.execute(query, [username, thoughts, hashtags, image_url, title, link], (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ message: 'Error saving share view' });
+  db.execute(
+    query,
+    [username, thoughts, hashtags, image_url, title, link],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Error saving share view" });
+      }
+      res.status(200).json({ message: "Share view saved successfully" });
     }
-    res.status(200).json({ message: 'Share view saved successfully' });
-  });
+  );
 });
 
 app.get("/api/getUserPosts", async (req, res) => {
@@ -253,58 +258,58 @@ app.get("/api/getUserPosts", async (req, res) => {
 
 
 
-// app.post('/generate-quiz', async (req, res) => {
-//   const { newsData } = req.body;
+app.post('/generate-quiz', async (req, res) => {
+  const { newsData } = req.body;
 
-//   if (!newsData || !Array.isArray(newsData) || newsData.length === 0) {
-//     return res.status(400).json({ error: 'News data is required and should be an array.' });
-//   }
+  if (!newsData || !Array.isArray(newsData) || newsData.length === 0) {
+    return res.status(400).json({ error: 'News data is required and should be an array.' });
+  }
 
-//   try {
-//     // Store all generated questions
-//     const quiz = [];
+  try {
+    // Store all generated questions
+    const quiz = [];
 
-//     // Loop through each news article to generate a question
-//     for (const article of newsData) {
-//       const dataString = JSON.stringify(article, null, 2);
+    // Loop through each news article to generate a question
+    for (const article of newsData) {
+      const dataString = JSON.stringify(article, null, 2);
 
-//       // Generate question for each news article
-//       const result = await geminiModel.generateContent(`
-//        Based on the following news, create one multiple-choice question with 4 options. Make sure the question is relevant to the news provided. Here is the news to analyze:
+      // Generate question for each news article
+      const result = await geminiModel.generateContent(`
+       Based on the following news, create one multiple-choice question with 4 options. Make sure the question is relevant to the news provided. Here is the news to analyze:
 
-//         Format the response as:
-//         1) According to the news, AI is primarily being used in healthcare for:
-//         (a) Administrative tasks
-//         (b) Diagnostics and treatment plans
-//         (c) Patient education
-//         (d) Drug discovery
-//         Correct answer: (b)
+        Format the response as:
+        1) According to the news, AI is primarily being used in healthcare for:
+        (a) Administrative tasks
+        (b) Diagnostics and treatment plans
+        (c) Patient education
+        (d) Drug discovery
+        Correct answer: (b)
         
-//         the news need not to be in this context.
+        the news need not to be in this context.
 
-//         Data to Analyze:
-//         ${dataString}
-//       `);
+        Data to Analyze:
+        ${dataString}
+      `);
 
-//       console.log("Result received from Gemini API:", result);
+      console.log("Result received from Gemini API:", result);
 
-//       if (!result || !result.response || !result.response.text) {
-//         return res.status(500).json({ error: 'Unable to generate quiz for some news.' });
-//       }
+      if (!result || !result.response || !result.response.text) {
+        return res.status(500).json({ error: 'Unable to generate quiz for some news.' });
+      }
 
-//       const rawQuiz = await result.response.text();
-//       console.log("Generated Quiz for this article:", rawQuiz);
+      const rawQuiz = await result.response.text();
+      console.log("Generated Quiz for this article:", rawQuiz);
 
-//       const formattedQuiz = parseQuiz(rawQuiz); // Call parseQuiz to format the raw quiz text
-//       quiz.push(formattedQuiz[0]); // Assuming each result is a single question
-//     }
+      const formattedQuiz = parseQuiz(rawQuiz); // Call parseQuiz to format the raw quiz text
+      quiz.push(formattedQuiz[0]); // Assuming each result is a single question
+    }
 
-//     res.status(200).json({ quiz });
-//   } catch (error) {
-//     console.error('Error generating quiz:', error);
-//     res.status(500).json({ error: 'An unexpected error occurred.' });
-//   }
-// });
+    res.status(200).json({ quiz });
+  } catch (error) {
+    console.error('Error generating quiz:', error);
+    res.status(500).json({ error: 'An unexpected error occurred.' });
+  }
+});
 
 
 // Function to fetch captions using Google APIs
@@ -404,7 +409,7 @@ app.post("/register", (req, res) => {
     languagePreference,
     dateOfBirth,
     district,
-    area
+    area,
   } = req.body;
 
   // Hash the password using bcrypt
@@ -434,7 +439,7 @@ app.post("/register", (req, res) => {
         languagePreference,
         dateOfBirth,
         district,
-        area
+        area,
       ],
       (err, result) => {
         if (err) {
@@ -480,17 +485,15 @@ app.post("/login", (req, res) => {
 
       // If passwords match, send a success response
       if (isMatch) {
-        res
-          .status(200)
-          .json({
-            message: "Login successful",
-            userId: user.id,
-            preference: user.preferred_categories,
-            languages: user.language_preference,
-            district: user.district,
-            name: user.name,
-            email: user.email,
-          });
+        res.status(200).json({
+          message: "Login successful",
+          userId: user.id,
+          preference: user.preferred_categories,
+          languages: user.language_preference,
+          district: user.district,
+          name: user.name,
+          email: user.email,
+        });
       } else {
         res.status(400).json({ message: "Invalid email or password" });
       }
@@ -514,7 +517,7 @@ app.get("/scrape3", async (req, res) => {
   try {
     console.log("testing 123");
 
-    const searchQuery = req.query.q; 
+    const searchQuery = req.query.q;
     if (!searchQuery) {
       return res.status(400).send("Search query is required.");
     }
@@ -527,7 +530,7 @@ app.get("/scrape3", async (req, res) => {
 
     // Go to the target URL
     await page.goto(url, { waitUntil: "networkidle2" });
-    await page.goto(url, { waitUntil: 'networkidle2',timeout: 60000 });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
 
     // Scrape the required data
     const elements = await page.evaluate(() => {
@@ -611,7 +614,8 @@ app.get("/quiz", async (req, res) => {
           id: "1",
           url: "https://example.com/news/1",
           title: "Tamil Nadu announces new industrial policy",
-          content_text: "The Tamil Nadu government has introduced a new industrial policy aimed at boosting investments.",
+          content_text:
+            "The Tamil Nadu government has introduced a new industrial policy aimed at boosting investments.",
           date_published: "2025-01-04T10:00:00Z",
           authors: [{ name: "Author A" }],
         },
@@ -619,7 +623,8 @@ app.get("/quiz", async (req, res) => {
           id: "2",
           url: "https://example.com/news/2",
           title: "Cyclone warning issued for coastal districts",
-          content_text: "A cyclone warning has been issued for several coastal districts in Tamil Nadu, including Chennai and Nagapattinam.",
+          content_text:
+            "A cyclone warning has been issued for several coastal districts in Tamil Nadu, including Chennai and Nagapattinam.",
           date_published: "2025-01-04T08:30:00Z",
           authors: [{ name: "Author B" }],
         },
@@ -862,16 +867,22 @@ function generateEmailTemplate(articles) {
       }
       .read-more {
           display: block;
-          width: fit-content;
-          margin: 0 auto;
-          background: linear-gradient(90deg, #6a11cb, #2575fc);
-          color: #ffffff;
+  width: fit-content;
+  margin: 0 auto;
+  background: #ffffff; /* White background */
+  color: #333333; /* Dark gray text for good contrast */
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  border: 2px solid #e0e0e0; /* Light gray border for subtle definition */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  transition: all 0.3s ease;
+      }
+      a{
           text-decoration: none;
-          padding: 12px 24px;
-          border-radius: 25px;
-          font-size: 16px;
-          font-weight: bold;
-          transition: background 0.3s ease;
+          color:#ffffff;
       }
       .read-more:hover {
           background: linear-gradient(90deg, #2575fc, #6a11cb);
@@ -923,7 +934,7 @@ async function sendEmail(recipient, subject, htmlContent) {
 
   const mailOptions = {
     from: 'கணினி_X\' "செய்தி360" <like22050.it@rmkec.ac.in>',
-    to: "rohitvijayan1111@gmail.com",
+    to: "rithikraja28.rr@gmail.com",
     subject: subject,
     html: htmlContent,
   };
@@ -940,11 +951,11 @@ async function sendEmail(recipient, subject, htmlContent) {
   }
 }
 
-app.post('/summarize-news', async (req, res) => {
+app.post("/summarize-news", async (req, res) => {
   const { newsData } = req.body;
 
   if (!newsData) {
-    return res.status(400).json({ error: 'News data is required.' });
+    return res.status(400).json({ error: "News data is required." });
   }
 
   try {
@@ -958,21 +969,20 @@ app.post('/summarize-news', async (req, res) => {
     console.log("Result received from Gemini API:", result);
 
     if (!result || !result.response || !result.response.text) {
-      return res.status(500).json({ error: 'Unable to generate summary.' });
+      return res.status(500).json({ error: "Unable to generate summary." });
     }
 
     const summary = await result.response.text();
     res.status(200).json({ summary });
   } catch (error) {
-    console.error('Error generating summary:', error);
-    res.status(500).json({ error: 'An unexpected error occurred.' });
+    console.error("Error generating summary:", error);
+    res.status(500).json({ error: "An unexpected error occurred." });
   }
 });
 
-
 // Main Workflow
-cron.schedule('*/30 * * * *', async () => {
-  console.log('Running Cron Job - Sending Daily News Email');
+cron.schedule("*/30 * * * *", async () => {
+  console.log("Running Cron Job - Sending Daily News Email");
 
   try {
     const latestArticles = await fetchNewsArticles(1);
@@ -991,14 +1001,14 @@ cron.schedule('*/30 * * * *', async () => {
 
 const fetchYouTubeVideos = async (query) => {
   //const apiKey = 'AIzaSyC6ZbKJcjjJXv6l73-5Ij-rSS4oOQ_jn0s'; // Replace with your API key
-  const apiKey='AIzaSyBKDEl_EH5J98Z5HEYTPfruJ6JsEe56H-c';
-  const baseUrl = 'https://www.googleapis.com/youtube/v3/search';
+  const apiKey = "AIzaSyBKDEl_EH5J98Z5HEYTPfruJ6JsEe56H-c";
+  const baseUrl = "https://www.googleapis.com/youtube/v3/search";
   try {
     const response = await axios.get(baseUrl, {
       params: {
-        part: 'snippet',
+        part: "snippet",
         q: query,
-        type: 'video',
+        type: "video",
         maxResults: 10,
         key: apiKey,
       },
@@ -1007,28 +1017,31 @@ const fetchYouTubeVideos = async (query) => {
 
     return response.data.items.map((item) => {
       const thumbnails = item.snippet.thumbnails;
-      const thumbnailUrl = thumbnails.high?.url || thumbnails.medium?.url || thumbnails.default?.url; // Fallback logic
+      const thumbnailUrl =
+        thumbnails.high?.url ||
+        thumbnails.medium?.url ||
+        thumbnails.default?.url; // Fallback logic
 
       return {
         title: item.snippet.title,
         description: item.snippet.description,
         videoId: item.id.videoId,
-        url: 'https://www.youtube.com/watch?v=' + item.id.videoId,
+        url: "https://www.youtube.com/watch?v=" + item.id.videoId,
         thumbnail: thumbnailUrl, // Set the URL based on available resolution
-        pubDate:item.snippet.publishTime
+        pubDate: item.snippet.publishTime,
       };
     });
   } catch (error) {
-    console.error('Error fetching YouTube videos:', error);
+    console.error("Error fetching YouTube videos:", error);
     return [];
   }
 };
 
-app.get('/youtube-videos', async (req, res) => {
+app.get("/youtube-videos", async (req, res) => {
   const { query } = req.query;
 
   if (!query) {
-    return res.status(400).json({ error: 'Query parameter is required' });
+    return res.status(400).json({ error: "Query parameter is required" });
   }
 
   try {
@@ -1038,6 +1051,181 @@ app.get('/youtube-videos', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
+app.post("/update-search-history", async (req, res) => {
+  const { userId, searchQuery } = req.body;
+
+  if (!userId || !searchQuery) {
+    return res.status(400).send("Invalid input");
+  }
+
+  try {
+    // Fetch the current search history for the user
+    db.query(
+      "SELECT search_history FROM users WHERE id = ?",
+      [userId],
+      (err, results) => {
+        if (err) {
+          console.error("Error fetching user data:", err);
+          return res.status(500).send("Error fetching user data");
+        }
+
+        if (!results.length) {
+          return res.status(404).send("User not found");
+        }
+
+        let searchHistory = {};
+        
+        // Safely parse search history
+        try {
+          // Log the raw search history for debugging
+          console.log("Raw search history:", results[0].search_history);
+          console.log("Type of search history:", typeof results[0].search_history);
+
+          // Check if search_history exists and is not null
+          if (results[0].search_history) {
+            // Handle different possible input types
+            const historyData = results[0].search_history;
+            
+            // If it's already an object, use it directly
+            if (typeof historyData === 'object') {
+              searchHistory = historyData;
+            } 
+            // If it's a string, try to parse it
+            else if (typeof historyData === 'string') {
+              // Remove any leading/trailing whitespace
+              const trimmedHistory = historyData.trim();
+              
+              // Only parse if not an empty string
+              if (trimmedHistory) {
+                searchHistory = JSON.parse(trimmedHistory);
+              }
+            }
+          }
+        } catch (parseErr) {
+          console.error("Error parsing search history:", parseErr);
+          // If parsing fails, start with an empty object
+          searchHistory = {};
+        }
+
+        // Ensure searchHistory is an object
+        if (typeof searchHistory !== 'object' || searchHistory === null) {
+          searchHistory = {};
+        }
+
+        // Update search history
+        searchHistory[searchQuery] = (searchHistory[searchQuery] || 0) + 1;
+
+        // Limit search history to last 10 entries
+        const limitedSearchHistory = Object.fromEntries(
+          Object.entries(searchHistory)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10)
+        );
+
+        // Stringify the search history
+        const searchHistoryString = JSON.stringify(limitedSearchHistory);
+
+        // Update the database
+        db.query(
+          "UPDATE users SET search_history = ? WHERE id = ?",
+          [searchHistoryString, userId],
+          (updateErr) => {
+            if (updateErr) {
+              console.error("Error updating search history:", updateErr);
+              return res.status(500).send("Error updating search history");
+            }
+
+            res.status(200).json({
+              message: "Search history updated successfully",
+              searchHistory: limitedSearchHistory
+            });
+          }
+        );
+      }
+    );
+  } catch (error) {
+    console.error("Error updating search history:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.get("/top-searches/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return res.status(400).send("User  ID is required");
+  }
+
+  try {
+    // Fetch the user's search history from the database
+    db.query(
+      "SELECT search_history FROM users WHERE id = ?",
+      [userId],
+      (err, results) => {
+        if (err) {
+          console.error("Error fetching user data:", err);
+          return res.status(500).send("Error fetching user data");
+        }
+
+        if (!results.length) {
+          return res.status(404).send("User  not found");
+        }
+
+        let searchHistory = {};
+
+        // Safely parse search history
+        try {
+          // Log the raw search history for debugging
+          console.log("Raw search history:", results[0].search_history);
+          console.log("Type of search history:", typeof results[0].search_history);
+
+          // Check if search_history exists and is not null
+          if (results[0].search_history) {
+            const historyData = results[0].search_history;
+
+            // If it's already an object, use it directly
+            if (typeof historyData === 'object') {
+              searchHistory = historyData;
+            } 
+            // If it's a string, try to parse it
+            else if (typeof historyData === 'string') {
+              const trimmedHistory = historyData.trim();
+              
+              // Only parse if not an empty string
+              if (trimmedHistory) {
+                searchHistory = JSON.parse(trimmedHistory);
+              }
+            }
+          }
+        } catch (parseErr) {
+          console.error("Error parsing search history:", parseErr);
+          return res.status(500).send("Corrupted search history data");
+        }
+
+        // Ensure searchHistory is an object
+        if (typeof searchHistory !== 'object' || searchHistory === null) {
+          searchHistory = {};
+        }
+
+        // Convert searchHistory object to an array of [query, count] pairs
+        const searchEntries = Object.entries(searchHistory);
+
+        // Sort entries by count in descending order
+        searchEntries.sort((a, b) => b[1] - a[1]);
+
+        // Take the top 3 entries
+        const topSearches = searchEntries.slice(0, 3);
+
+        res.status(200).json({ topSearches });
+      }
+    );
+  } catch (error) {
+    console.error("Error retrieving top searches:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
 
 // Start the server
 app.listen(PORT, () => {
