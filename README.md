@@ -3,28 +3,45 @@
 Seithi360 is a feature-rich news aggregator designed to empower communities by curating accurate, personalized news from verified sources. Leveraging custom web scraping and trusted APIs, the platform categorizes content, delivers multi-language support, and keeps users informed through tailored email updates. It prioritizes user preferences, including location and interests, ensuring relevance and enhancing the overall news consumption experience.
 
 ---
-![image](https://github.com/user-attachments/assets/8825cd4f-a13b-4948-b323-06b9f43626bd)
+![image](https://github.com/user-attachments/assets/7dfd2bb3-ee49-402d-adaa-2cdbe664f744)
+![image](https://github.com/user-attachments/assets/dee6ffa4-9ee3-4643-8d50-b4954cfc879f)
+
+
 
 
 ## Features 📊
 
 - **Aggregate News**: News is sourced from verified APIs and through our custom web scraping technology.
- ![image](https://github.com/user-attachments/assets/81e934c7-0ae4-4573-9f2b-b86fa46b89cb)
+ ![image](https://github.com/user-attachments/assets/fea8440c-1063-4284-b429-ab0134581118)
+
 
 - **Content Categorization**: Articles are categorized to enhance discoverability.
-  ![image](https://github.com/user-attachments/assets/cc535ad4-63bd-472f-a133-7f7c43c627b5)
+ ![image](https://github.com/user-attachments/assets/0cddde76-f21e-4ee5-afd6-6e191f41fbd2)
+
 
 - **Personalized Feeds**: Users receive tailored news articles based on their preferences, district, and location.
+- ![image](https://github.com/user-attachments/assets/611c5bae-4afd-4998-8c01-17ef512a75b9)
+
 
 - **Email Updates**: Automatic email notifications with articles matching user interests.
    ![WhatsApp Image 2025-01-01 at 09 27 40_ca0e3432](https://github.com/user-attachments/assets/4696020e-1ef0-4255-81a3-2e3c90593862)
 
 - **Multi-language Support**: News articles are delivered in the user’s preferred language.
-  ![image](https://github.com/user-attachments/assets/c9895896-6612-4665-a5e8-63059f6fce77)
+ ![image](https://github.com/user-attachments/assets/4d93ff10-9434-4752-8b9f-ecc5d185bc98)
 
 - **Accurate and Relevant**: Ensures information accuracy by sourcing from trusted sources and implementing content filtering.
 
----
+- **Communities**
+- ![image](https://github.com/user-attachments/assets/6a0b9e47-da96-4f4e-8948-0241191a1dcd)
+
+- **Shorts**
+- ![image](https://github.com/user-attachments/assets/ccc478c4-c697-4827-84b2-764b35ce290c)
+
+- **User Profile**
+- ![Uploading image.png…]()
+
+
+
 
 ## Prerequisites 🛠️
 
