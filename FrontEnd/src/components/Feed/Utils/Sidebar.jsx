@@ -43,7 +43,7 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchTrendingHashtags = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/trending-hashtags");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND}/api/trending-hashtags`);
         const data = await response.json();
         setTrendingHashtags(data);
       } catch (error) {
@@ -80,7 +80,7 @@ const Sidebar = () => {
         const fullTextBase = textBase.join("\n\n");
 
         // Send the combined text to backend for summarization
-        const summaryResponse = await fetch("http://localhost:5000/summarize-news", {
+        const summaryResponse = await fetch(`${process.env.REACT_APP_BACKEND}/summarize-news`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

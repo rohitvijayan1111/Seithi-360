@@ -13,7 +13,7 @@ const UserPostsPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/getPostsByHashtag/${hashtag}`); // Fetch posts by hashtag
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/getPostsByHashtag/${hashtag}`); // Fetch posts by hashtag
         setPosts(response.data);
         setLoading(false);
       } catch (error) {

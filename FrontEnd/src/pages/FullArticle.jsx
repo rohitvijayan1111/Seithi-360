@@ -13,7 +13,7 @@ const FullArticle = () => {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/news-articles/${id}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/news-articles/${id}`);
         setArticle(response.data);
         setLoading(false);
       } catch (error) {
@@ -33,7 +33,7 @@ const FullArticle = () => {
     return <div className="flex justify-center items-center h-screen">Article not found</div>;
   }
 
-  const imageUrl = article.image_path ? `http://localhost:5000${article.image_path}` : "";
+  const imageUrl = article.image_path ? `${process.env.REACT_APP_BACKEND}${article.image_path}` : "";
   const pubDate = new Date(article.created_at).toLocaleDateString();
 
   return (

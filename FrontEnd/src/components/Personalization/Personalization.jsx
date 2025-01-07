@@ -361,7 +361,7 @@ const OthersContent = () => {
     try {
       setAreaLoading(true);
       const area = sessionStorage.getItem("areaNews") || "Thiruvanmiyur News";
-      const response = await axios.get("http://localhost:5000/scrape3", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
         params: { q: area },
       });
       const articles = formatArticles(response.data.articles || []);
@@ -377,7 +377,7 @@ const OthersContent = () => {
   const fetchDistrictArticles = async (district) => {
     try {
       setDistrictLoading(true);
-      const response = await axios.get("http://localhost:5000/scrape3", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
         params: { q: district },
       });
       const articles = formatArticles(response.data.articles || []);
@@ -628,7 +628,7 @@ const Personalization = () => {
   // Fetch YouTube videos for specific sections
   const fetchYouTubeVideosForSection = async (section) => {
     try {
-      const response = await axios.get("http://localhost:5000/youtube-videos", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/youtube-videos`, {
         params: { query: section }
       });
       const vid=response.data.videos;
@@ -810,7 +810,7 @@ const Personalization = () => {
   // Fetch scraped articles for a specific interest
   const fetchScrapedArticles = async (query) => {
     try {
-      const response = await axios.get("http://localhost:5000/scrape3", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
         params: { q: query || "Trending News" },
       });
       return response.data.articles || [];

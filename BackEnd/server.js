@@ -504,7 +504,7 @@ app.post("/login", (req, res) => {
 const getImageUrl = async (url) => {
   try {
     const response = await axios.get(
-      `http://localhost:5000/resolve-image-url?url=${url}`
+      `${process.env.REACT_APP_BACKEND}/resolve-image-url?url=${url}`
     );
     return response.data.imageUrl; // Get the actual image URL after redirect
   } catch (error) {
@@ -758,7 +758,7 @@ app.get("/scrapeforMail", async (req, res) => {
 
 // Fetch Latest News Article
 async function fetchNewsArticles(userId) {
-  const API_URL = `http://localhost:5000/scrapeforMail?userId=${userId}`;
+  const API_URL = `${process.env.REACT_APP_BACKEND}/scrapeforMail?userId=${userId}`;
   try {
     const response = await fetch(API_URL);
     if (!response.ok) {

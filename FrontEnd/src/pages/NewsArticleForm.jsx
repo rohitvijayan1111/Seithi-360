@@ -20,10 +20,10 @@ const NewsArticleForm = () => {
     formData.append('metaTags', metaTags);
 
     try {
-      const imageResponse = await axios.post("http://localhost:5000/api/upload", formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const imageResponse = await axios.post(`${process.env.REACT_APP_BACKEND}/api/upload`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       const imagePath = imageResponse.data.imagePath;
 
-      await axios.post('http://localhost:5000/api/articles', { title, content,district, metaTags, imagePath });
+      await axios.post(`${process.env.REACT_APP_BACKEND}/api/articles`, { title, content,district, metaTags, imagePath });
       alert('Article posted successfully!');
     } catch (error) {
       console.error(error);

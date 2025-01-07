@@ -16,7 +16,7 @@ const QuizPage = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post('http://localhost:5000/generate-quiz', { newsData });
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND}/generate-quiz`, { newsData });
       setQuiz(response.data.quiz);
       console.log(response.data.quiz);
     } catch (err) {

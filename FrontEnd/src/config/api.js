@@ -36,7 +36,7 @@ export const fetchScrapedArticles = async (query) => {
     query="Trending News";
   }
   console.log(query+"INSJALDAS");
-  const url = `http://localhost:5000/scrape3`; 
+  const url = `${process.env.REACT_APP_BACKEND}/scrape3`; 
   try {
     const response = await axios.get(url, {
       params: { q: query },
