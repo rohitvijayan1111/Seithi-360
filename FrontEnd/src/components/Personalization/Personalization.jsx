@@ -346,22 +346,24 @@ const OthersContent = () => {
   const [districtNews, setDistrictNews] = useState([]);
   const [areaLoading, setAreaLoading] = useState(false);
   const [districtLoading, setDistrictLoading] = useState(false);
-  const [article, setArticle] = useState(null); 
+  const [article, setArticle] = useState(null);
   const [error, setError] = useState(null);
 
-  const formatArticles = (articles) => 
+  const formatArticles = (articles) =>
     articles.map((article) => ({
       title: article.title,
       description: article.source || "No description available",
       imageUrl: article.imgSrc || "https://via.placeholder.com/300x200",
       url: article.url,
+      district: article.district,
+      content: article.content,
     }));
 
   const fetchAreaArticles = async () => {
     try {
       setAreaLoading(true);
       const area = sessionStorage.getItem("areaNews") || "Thiruvanmiyur News";
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
+      const response = await axios.get("http://localhost:5000/scrape3", {
         params: { q: area },
       });
       const articles = formatArticles(response.data.articles || []);
@@ -377,7 +379,7 @@ const OthersContent = () => {
   const fetchDistrictArticles = async (district) => {
     try {
       setDistrictLoading(true);
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
+      const response = await axios.get("http://localhost:5000/scrape3", {
         params: { q: district },
       });
       const articles = formatArticles(response.data.articles || []);
@@ -414,79 +416,90 @@ const OthersContent = () => {
     }
   };
   const district = sessionStorage.getItem("district");
-  console.log(district);
+  console.log("Your district is " + district);
 
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        
-        const response = await fetch(`/api/news-articles/${district}`);
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} - ${response.statusText}`);
-        }
-        const data = await response.json();
-        setArticle(data);
+        // Call the backend API with the district parameter
+        const response = await axios.get(
+          `http://localhost:5000/news-articles/${district}`
+        );
+
+        console.log("Response:", response.data);
+
+        // Assuming the endpoint returns a single article object
+        setArticle(response.data);
       } catch (err) {
-        setError(err.message);
+        console.error("Error fetching article:", err);
+        setError(
+          err.response?.data || "An error occurred while fetching the article"
+        );
       }
     };
 
-    fetchArticle();
+    // Ensure `district` exists before making the API call
+    if (district) {
+      fetchArticle();
+    }
   }, [district]);
 
   return (
     <div className="text-lg text-yellow-600">
-      <h2 className="text-2xl font-bold mb-4">What's Happening in Your Area?</h2>
-      
-      {/* <div className="mb-6">
-  <h3 className="text-xl font-semibold mb-2">Trending News from Journalist</h3>
-  <p className="text-sm text-gray-600 mb-4">
-    Stay updated with the latest happenings shared by local residents.
-  </p>
-4
-  {areaLoading ? (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {[...Array(3)].map((_, index) => (
-        <SkeletonLoader key={index} />
-      ))}
-    </div>
-  ) : Array.isArray(article) && article.length > 0 ? (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {article.map((article, index) => (
-        <div
-          key={index}
-          className="border border-gray-300 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-        >
-          <img
-            src={article.image_path}
-            alt={article.title}
-            className="w-full h-48 object-cover rounded-md mb-4"
-          />
-          <h4 className="text-lg font-bold mb-2">{article.title}</h4>
-          <p className="text-sm text-gray-600 mb-2">{article.meta_tags}</p>
-          <p className="text-sm mb-4 line-clamp-3">{article.content}</p>
-          <p className="text-sm text-gray-500">
-            <strong>District:</strong> {article.district}
-          </p>
-          <p className="text-sm text-gray-500">
-            <strong>Created At:</strong>{" "}
-            {new Date(article.created_at).toLocaleString()}
-          </p>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <p>No articles available.</p>
-  )}
-</div> */}
-
+      <h2 className="text-2xl font-bold mb-4">
+        What's Happening in Your Area?
+      </h2>
 
       <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-2">News from Local People</h3>
+        <h3 className="text-xl font-semibold mb-2">
+          Trending News from Journalist
+        </h3>
         <p className="text-sm text-gray-600 mb-4">
           Stay updated with the latest happenings shared by local residents.
         </p>
-        
+
+        {areaLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, index) => (
+              <SkeletonLoader key={index} />
+            ))}
+          </div>
+        ) : Array.isArray(article) && article.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {article.map((article, index) => (
+              <div
+                key={index}
+                className="border border-gray-300 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+              >
+                <img
+                  src={"http://localhost:5000" + article.image_path}
+                  alt={article.title}
+                  className="w-full h-48 object-cover rounded-md mb-4"
+                />
+                <h4 className="text-lg font-bold mb-2">{article.title}</h4>
+                <p className="text-sm text-gray-600 mb-2">
+                  {article.meta_tags}
+                </p>
+                <p className="text-sm mb-4 line-clamp-3">{article.content}</p>
+                <p className="text-sm text-gray-500">
+                  <strong>District:</strong> {article.district}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No articles available.</p>
+        )}
+      </div>
+
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold mb-2">
+          News from Verified Sources
+        </h3>
+        <p className="text-sm text-gray-600 mb-4">
+          Stay updated with the latest happenings shared by Verified Sources.
+        </p>
+
         {areaLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(3)].map((_, index) => (
@@ -503,7 +516,9 @@ const OthersContent = () => {
       </div>
 
       <div className="mb-6">
-        <label htmlFor="district" className="block mb-2 font-semibold">Select District:</label>
+        <label htmlFor="district" className="block mb-2 font-semibold">
+          Select District:
+        </label>
         <select
           id="district"
           value={selectedDistrict}
@@ -520,7 +535,9 @@ const OthersContent = () => {
       </div>
 
       <div className="mb-6">
-        <label htmlFor="search" className="block mb-2 font-semibold">Search for Happenings:</label>
+        <label htmlFor="search" className="block mb-2 font-semibold">
+          Search for Happenings:
+        </label>
         <div className="flex items-center">
           <div className="relative w-full md:w-1/2">
             <input
@@ -532,20 +549,20 @@ const OthersContent = () => {
               className="border border-gray-300 rounded-l p-2 w-full pl-4 pr-10 text-sm"
             />
             <button
-                onClick={handleSearchSubmit}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-              >
-                🔍
-              </button>
+              onClick={handleSearchSubmit}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+            >
+              🔍
+            </button>
           </div>
         </div>
       </div>
 
       <div className="mb-6">
         <h3 className="text-xl font-semibold mb-2">
-          {selectedDistrict ? `${selectedDistrict} News` : 'Search Results'}
+          {selectedDistrict ? `${selectedDistrict} News` : "Search Results"}
         </h3>
-        
+
         {districtLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(3)].map((_, index) => (
@@ -554,7 +571,7 @@ const OthersContent = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {districtNews. length > 0 ? (
+            {districtNews.length > 0 ? (
               districtNews.map((article, index) => (
                 <ArticleCard key={index} article={article} />
               ))
@@ -567,6 +584,8 @@ const OthersContent = () => {
     </div>
   );
 };
+
+
 
 
 const Personalization = () => {

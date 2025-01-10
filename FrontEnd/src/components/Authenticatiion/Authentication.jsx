@@ -101,16 +101,25 @@ const AuthPage = () => {
     ? handleLogin
     : async (event) => {
         event.preventDefault();
+        const updatedFormData = {
+          ...formData,
+          preferredCategories: formData.otherPreference
+            ? [...formData.preferredCategories, formData.otherPreference]
+            : formData.preferredCategories,
+        };
 
         try {
           // Step 1: Register the user
-          const response = await fetch(`${process.env.REACT_APP_BACKEND}/register`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          });
+          const response = await fetch(
+            `${process.env.REACT_APP_BACKEND}/register`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(updatedFormData),
+            }
+          );
 
           if (response.ok) {
             // Show success toast
@@ -374,7 +383,6 @@ const AuthPage = () => {
                 )}
 
                 {/* Preferred Categories */}
-                {/* Preferred Categories */}
                 {!isLogin && (
                   <div>
                     <label
@@ -420,10 +428,52 @@ const AuthPage = () => {
                           </label>
                         </div>
                       ))}
+
+                      {/* Others Checkbox */}
+                      <div className="flex items-center mt-2">
+                        <input
+                          id="category-others"
+                          type="checkbox"
+                          value="Others"
+                          checked={formData.otherPreference !== ""}
+                          onChange={(e) => {
+                            if (!e.target.checked) {
+                              setFormData((prevData) => ({
+                                ...prevData,
+                                otherPreference: "",
+                              }));
+                            }
+                          }}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                        />
+                        <label
+                          htmlFor="category-others"
+                          className="ml-2 block text-sm text-black"
+                        >
+                          Others
+                        </label>
+                      </div>
+
+                      {/* Text Field for "Others" */}
+                      {formData.otherPreference !== "" && (
+                        <div className="mt-2">
+                          <input
+                            type="text"
+                            value={formData.otherPreference}
+                            onChange={(e) =>
+                              setFormData((prevData) => ({
+                                ...prevData,
+                                otherPreference: e.target.value,
+                              }))
+                            }
+                            placeholder="Enter your preference"
+                            className="block w-full rounded-md bg-white px-3 py-2 text-base text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
-
                 {/* Language Preference */}
                 {!isLogin && (
                   <div>

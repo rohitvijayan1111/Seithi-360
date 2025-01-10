@@ -11,11 +11,13 @@ const puppeteer = require("puppeteer");
 const nodemailer = require("nodemailer");
 const cron = require("node-cron");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const geminiApiKey = "AIzaSyAdFW-tfACDH3xlRiB2TFir0RZpm9-RxCc";
+/* const geminiApiKey = "AIzaSyAdFW-tfACDH3xlRiB2TFir0RZpm9-RxCc"; */
+ const geminiApiKey = "AIzaSyDb_Dd0sjwSDEzXpn9wNrKFIM6yCQwPUq4"; 
 const googleAI = new GoogleGenerativeAI(geminiApiKey);
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+require("dotenv").config();
 
 const geminiConfig = {
   temperature: 0.9,
@@ -146,18 +148,20 @@ app.post("/api/upload", upload.single("image"), (req, res) => {
   res.status(200).json({ imagePath: `/uploads/${req.file.filename}` });
 });
 
-app.post('/api/articles', (req, res) => {
-  const { title, content,district, metaTags, imagePath } = req.body;
-  
+app.post("/api/articles", (req, res) => {
+  const { title, content, metaTags, imagePath, district } = req.body;
+
   db.query(
-    'INSERT INTO news_articles (title, content, meta_tags, image_path,district) VALUES (?, ?, ?, ?,?)',
-    [title, content, metaTags, imagePath,district],
+    "INSERT INTO news_articles (title, content, meta_tags, image_path,district) VALUES (?, ?, ?, ?,?)",
+    [title, content, metaTags, imagePath, district],
     (err, results) => {
       if (err) {
         console.error(err);
         return res.status(500).send("Error inserting article");
       }
-      res.status(201).json({ id: results.insertId, title, content, metaTags, imagePath,district });
+      res
+        .status(201)
+        .json({ id: results.insertId, title, content, metaTags, imagePath });
     }
   );
 });
@@ -190,8 +194,9 @@ app.get("/api/news-articles/:id", (req, res) => {
   });
 });
 
-app.get("/api/news-articles/:district", (req, res) => {
+app.get("/news-articles/:district", (req, res) => {
   const district = req.params.district;
+  console.log("GOT IT INTO DISTRICT");
   const query = "SELECT * FROM news_articles WHERE district = ?";
 
   db.query(query, [district], (err, results) => {
@@ -202,7 +207,7 @@ app.get("/api/news-articles/:district", (req, res) => {
     if (results.length === 0) {
       return res.status(404).send("Article not found");
     }
-    res.json(results[0]);
+    res.json(results);
   });
 });
 
@@ -256,13 +261,13 @@ app.get("/api/getUserPosts", async (req, res) => {
   }
 });
 
-
-
-app.post('/generate-quiz', async (req, res) => {
+app.post("/generate-quiz", async (req, res) => {
   const { newsData } = req.body;
 
   if (!newsData || !Array.isArray(newsData) || newsData.length === 0) {
-    return res.status(400).json({ error: 'News data is required and should be an array.' });
+    return res
+      .status(400)
+      .json({ error: "News data is required and should be an array." });
   }
 
   try {
@@ -294,7 +299,9 @@ app.post('/generate-quiz', async (req, res) => {
       console.log("Result received from Gemini API:", result);
 
       if (!result || !result.response || !result.response.text) {
-        return res.status(500).json({ error: 'Unable to generate quiz for some news.' });
+        return res
+          .status(500)
+          .json({ error: "Unable to generate quiz for some news." });
       }
 
       const rawQuiz = await result.response.text();
@@ -306,11 +313,10 @@ app.post('/generate-quiz', async (req, res) => {
 
     res.status(200).json({ quiz });
   } catch (error) {
-    console.error('Error generating quiz:', error);
-    res.status(500).json({ error: 'An unexpected error occurred.' });
+    console.error("Error generating quiz:", error);
+    res.status(500).json({ error: "An unexpected error occurred." });
   }
 });
-
 
 // Function to fetch captions using Google APIs
 async function getVideoCaptions(videoId) {
@@ -514,13 +520,13 @@ const getImageUrl = async (url) => {
 };
 
 app.post("/send-email", async (req, res) => {
-   const transporter = nodemailer.createTransport({
-     service: "gmail",
-     auth: {
-       user: "rohitvijayandrive@gmail.com",
-       pass: "kfzxznsmouxvszel",
-     },
-   });
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "rohitvijayandrive@gmail.com",
+      pass: "kfzxznsmouxvszel",
+    },
+  });
   const { subject, to, text } = req.body;
   console.log(req.body);
   const mailOptions = {
@@ -1101,27 +1107,30 @@ app.post("/update-search-history", async (req, res) => {
         }
 
         let searchHistory = {};
-        
+
         // Safely parse search history
         try {
           // Log the raw search history for debugging
           console.log("Raw search history:", results[0].search_history);
-          console.log("Type of search history:", typeof results[0].search_history);
+          console.log(
+            "Type of search history:",
+            typeof results[0].search_history
+          );
 
           // Check if search_history exists and is not null
           if (results[0].search_history) {
             // Handle different possible input types
             const historyData = results[0].search_history;
-            
+
             // If it's already an object, use it directly
-            if (typeof historyData === 'object') {
+            if (typeof historyData === "object") {
               searchHistory = historyData;
-            } 
+            }
             // If it's a string, try to parse it
-            else if (typeof historyData === 'string') {
+            else if (typeof historyData === "string") {
               // Remove any leading/trailing whitespace
               const trimmedHistory = historyData.trim();
-              
+
               // Only parse if not an empty string
               if (trimmedHistory) {
                 searchHistory = JSON.parse(trimmedHistory);
@@ -1135,7 +1144,7 @@ app.post("/update-search-history", async (req, res) => {
         }
 
         // Ensure searchHistory is an object
-        if (typeof searchHistory !== 'object' || searchHistory === null) {
+        if (typeof searchHistory !== "object" || searchHistory === null) {
           searchHistory = {};
         }
 
@@ -1164,7 +1173,7 @@ app.post("/update-search-history", async (req, res) => {
 
             res.status(200).json({
               message: "Search history updated successfully",
-              searchHistory: limitedSearchHistory
+              searchHistory: limitedSearchHistory,
             });
           }
         );
@@ -1204,20 +1213,23 @@ app.get("/top-searches/:userId", (req, res) => {
         try {
           // Log the raw search history for debugging
           console.log("Raw search history:", results[0].search_history);
-          console.log("Type of search history:", typeof results[0].search_history);
+          console.log(
+            "Type of search history:",
+            typeof results[0].search_history
+          );
 
           // Check if search_history exists and is not null
           if (results[0].search_history) {
             const historyData = results[0].search_history;
 
             // If it's already an object, use it directly
-            if (typeof historyData === 'object') {
+            if (typeof historyData === "object") {
               searchHistory = historyData;
-            } 
+            }
             // If it's a string, try to parse it
-            else if (typeof historyData === 'string') {
+            else if (typeof historyData === "string") {
               const trimmedHistory = historyData.trim();
-              
+
               // Only parse if not an empty string
               if (trimmedHistory) {
                 searchHistory = JSON.parse(trimmedHistory);
@@ -1230,7 +1242,7 @@ app.get("/top-searches/:userId", (req, res) => {
         }
 
         // Ensure searchHistory is an object
-        if (typeof searchHistory !== 'object' || searchHistory === null) {
+        if (typeof searchHistory !== "object" || searchHistory === null) {
           searchHistory = {};
         }
 
@@ -1251,7 +1263,6 @@ app.get("/top-searches/:userId", (req, res) => {
     res.status(500).send("Internal server error");
   }
 });
-
 
 // Start the server
 app.listen(PORT, () => {

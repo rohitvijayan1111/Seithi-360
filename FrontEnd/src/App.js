@@ -6,7 +6,7 @@ function App() {
     <>
       
       <Outlet />
-      <ScrollToTop />
+      {/* <ScrollToTop /> */}
     </>
   );
 }
