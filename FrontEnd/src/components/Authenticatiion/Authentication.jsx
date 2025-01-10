@@ -5,7 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 
 const AuthPage = () => {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true); // Default to Login form
+  const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,9 +13,9 @@ const AuthPage = () => {
     confirmPassword: "",
     mobile: "",
     district: "",
-    area: "", // New District field
-    preferredCategories: [], // Array for multiple category selections
-    languagePreference: "english", // Default to English
+    area: "", 
+    preferredCategories: [],
+    languagePreference: "english", 
     dateOfBirth: "",
   });
   const [loginData, setLoginData] = useState({
@@ -53,7 +53,7 @@ const AuthPage = () => {
 
 
   const handleLogin = async (event) => {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
 
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND}/login`, {
@@ -78,7 +78,6 @@ const AuthPage = () => {
         sessionStorage.setItem("name", data.name);
         sessionStorage.setItem("email", data.email);
 
-        // Redirect to home page after a short delay
         setTimeout(() => {
           navigate("/home");
         }, 3000);
@@ -122,19 +121,16 @@ const AuthPage = () => {
           );
 
           if (response.ok) {
-            // Show success toast
             toast.success(
               "Registration successful! Please log in to continue.",
               {
                 position: "top-right",
-                autoClose: 5000, // 5 seconds
+                autoClose: 5000, 
               }
             );
             navigate("/auth");
 
-            // Step 2: Store user details in session storage
 
-            // Step 3: Send a confirmation email
             const emailResponse = await fetch(
               `${process.env.REACT_APP_BACKEND}/send-email`,
               {
@@ -166,7 +162,6 @@ const AuthPage = () => {
               );
             }
 
-            // Reset form fields
             setFormData({
               name: "",
               email: "",
@@ -180,7 +175,6 @@ const AuthPage = () => {
               dateOfBirth: "",
             });
 
-            // Redirect to login form
             setIsLogin(true);
           } else {
             toast.error("Failed to register. Please try again.", {
@@ -202,11 +196,10 @@ const AuthPage = () => {
       <ToastContainer />
       <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left side: Branding */}
           <div className="relative flex justify-center items-center rounded-lg shadow-lg overflow-hidden bg-gray-50 p-4">
             <img
               alt="Branding"
-              src="seithi360-logo-bg.png" // Replace with your image URL
+              src="seithi360-logo-bg.png"
               className="w-full h-auto max-h-80 lg:max-h-[500px] object-contain"
             />
             <div className="absolute inset-0 flex flex-col justify-end items-center bg-gradient-to-t from-black/50 via-transparent to-transparent p-6">
@@ -215,7 +208,6 @@ const AuthPage = () => {
             </div>
           </div>
 
-          {/* Right side: Form */}
           <div className="flex justify-center items-center bg-white p-8 rounded-lg shadow-lg">
             <div className="w-full max-w-md">
               <h2 className="text-center text-2xl font-bold text-black mb-6">
@@ -223,7 +215,6 @@ const AuthPage = () => {
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Name Field (only for Register form) */}
                 {!isLogin && (
                   <div>
                     <label
@@ -246,7 +237,6 @@ const AuthPage = () => {
                   </div>
                 )}
 
-                {/* Email Field */}
                 <div>
                   <label
                     htmlFor="email"
@@ -268,7 +258,6 @@ const AuthPage = () => {
                   </div>
                 </div>
 
-                {/* Mobile Number Field */}
                 {!isLogin && (
                   <div>
                     <label
@@ -291,7 +280,6 @@ const AuthPage = () => {
                   </div>
                 )}
 
-                {/* Password Field */}
                 <div>
                   <label
                     htmlFor="password"
@@ -313,7 +301,6 @@ const AuthPage = () => {
                   </div>
                 </div>
 
-                {/* Confirm Password (only for Register form) */}
                 {!isLogin && (
                   <div>
                     <label
@@ -336,7 +323,6 @@ const AuthPage = () => {
                   </div>
                 )}
 
-                {/* District Field */}
                 {!isLogin && (
                   <div>
                     <label
@@ -359,7 +345,6 @@ const AuthPage = () => {
                   </div>
                 )}
 
-                {/* Area Field */}
                 {!isLogin && (
                   <div>
                     <label
@@ -373,7 +358,7 @@ const AuthPage = () => {
                         id="area"
                         name="area"
                         type="text"
-                        value={formData.area || ""} // Default to an empty string if not set
+                        value={formData.area || ""}
                         onChange={handleInputChange}
                         required
                         className="block w-full rounded-md bg-white px-3 py-2 text-base text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -382,7 +367,6 @@ const AuthPage = () => {
                   </div>
                 )}
 
-                {/* Preferred Categories */}
                 {!isLogin && (
                   <div>
                     <label
@@ -474,7 +458,7 @@ const AuthPage = () => {
                     </div>
                   </div>
                 )}
-                {/* Language Preference */}
+
                 {!isLogin && (
                   <div>
                     <label
@@ -499,7 +483,6 @@ const AuthPage = () => {
                   </div>
                 )}
 
-                {/* Date of Birth */}
                 {!isLogin && (
                   <div>
                     <label
@@ -522,7 +505,6 @@ const AuthPage = () => {
                   </div>
                 )}
 
-                {/* Submit Button */}
                 <div>
                   <button
                     type="submit"
@@ -533,7 +515,6 @@ const AuthPage = () => {
                 </div>
               </form>
 
-              {/* Toggle between Login/Signup */}
               <div className="mt-4 text-center">
                 <button
                   onClick={toggleForm}

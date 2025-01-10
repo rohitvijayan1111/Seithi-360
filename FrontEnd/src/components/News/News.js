@@ -226,7 +226,6 @@ function News({ personalized, handleShowSidebar }) {
         )}
       </Box>
 
-      {/* Right Sidebar - Recommended Titles */}
       <Box
         sx={{
           flex: { xs: "1", md: "1" },

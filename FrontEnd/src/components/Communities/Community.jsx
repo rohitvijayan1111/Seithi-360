@@ -4,7 +4,6 @@ import Example from "../Feed/Header/Header";
 import Sidebar from "./utils/SidebarC";
 import axios from "axios";
 
-// Function to fetch scraped articles based on the query (community name + " News")
 const fetchScrapedArticles = async (query) => {
   try {
     const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
@@ -17,7 +16,6 @@ const fetchScrapedArticles = async (query) => {
   }
 };
 
-// Function to format articles for display
 const formatArticles = (articles) =>
   articles.map((article) => ({
     title: article.title,
@@ -79,25 +77,23 @@ const Community = () => {
   const [communities, setCommunities] = useState([]);
   const [selectedCommunity, setSelectedCommunity] = useState(null);
   const [communityPosts, setCommunityPosts] = useState([]);
-  const [loading, setLoading] = useState(false); // Loading state to show/hide loading effect
+  const [loading, setLoading] = useState(false);
   const [toggleSidebar, setToggleSidebar] = useState(false);
 
-  // Fetching the community data on component mount
   useEffect(() => {
     setCommunities(dummyCommunities);
   }, []);
 
-  // Fetch posts when a community is selected
   useEffect(() => {
     if (selectedCommunity) {
       const query = `${selectedCommunity.name} News`;
-      setLoading(true); // Set loading to true before fetching
+      setLoading(true);
       fetchScrapedArticles(query)
         .then((articles) => {
           setCommunityPosts(formatArticles(articles));
         })
         .finally(() => {
-          setLoading(false); // Set loading to false after fetching
+          setLoading(false); 
         });
     }
   }, [selectedCommunity]);
@@ -176,14 +172,12 @@ const Community = () => {
       <Example />
       <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100 text-gray-800">
         <div className="lg:w-64 w-full lg:left-0 lg:top-0 lg:h-full lg:flex lg:flex-col bg-white mt-4 shadow-md lg:block lg:mt-0 z-50">
-          {/* Sidebar */}
           <Sidebar
             communities={communities}
             onSelectCommunity={setSelectedCommunity}
           />
         </div>
 
-        {/* Main Content */}
         <div className="flex-1 p-6 lg:p-8 transition-all duration-300 lg:ml-65">
           <div className="p-6 bg-white shadow-lg rounded-lg">
             {renderCommunityDetails()}

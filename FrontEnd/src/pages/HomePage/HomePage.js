@@ -12,14 +12,13 @@ function HomePage() {
         sx={{
           backgroundColor: "#f9f9ff",
           minHeight: "100vh",
-          paddingTop: "80px", // Adjust for navbar height
+          paddingTop: "80px", 
           paddingX: { xs: 2, sm: 4, md: 8 },
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
         }}
       >
-        {/* News Section */}
         <Box
           sx={{
             display: "flex",
@@ -32,12 +31,11 @@ function HomePage() {
           <News />
         </Box>
 
-        {/* Footer Section */}
         <Box
           component="footer"
           sx={{
             width: "100%",
-            marginTop: "auto", // Push footer to the bottom
+            marginTop: "auto", 
           }}
         >
           <Footer />

@@ -11,25 +11,21 @@ export const fetchArticles = createAsyncThunk(
         const scrapArticles = await fetchScrapedArticles(query, params);
         articles = [...articles, ...scrapArticles];
       }
-      // Fetch from NYT API
       if (source.key === 'gnews-api' || source.key === 'all') {
         const nyTimesArticles = await fetchGnewsArticles(query, params);
         articles = [...articles, ...nyTimesArticles];
       }
 
-      // Fetch from NewsAPI
       if (source.key === 'news-api' || source.key === 'all') {
         const newsAPIArticles = await fetchNewsAPIArticles(query, params);
         articles = [...articles, ...newsAPIArticles];
       }
   
-      // Fetch from The Guardian API
       if (source.key === 'guardian-api' || source.key === 'all') {
         const guardianArticles = await fetchGuardianArticles(query, params);
         articles = [...articles, ...guardianArticles];
       }
   
-      // Fetch from NYT API
       if (source.key === 'ny-times' || source.key === 'all') {
         const nyTimesArticles = await fetchNYTimesArticles(query, params);
         articles = [...articles, ...nyTimesArticles];

@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import axios from "axios"; // Ensure axios is installed and imported
+import axios from "axios"; 
 
 const BasedOnYourSearch = () => {
   const [localNews, setLocalNews] = useState([]);
-  const [loading, setLoading] = useState(true); // For loading state
-  const userId = sessionStorage.getItem("userId"); // Retrieve userId from session storage
+  const [loading, setLoading] = useState(true); 
+  const userId = sessionStorage.getItem("userId"); 
 
-  // Fetch top searches
   const fetchTopSearches = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_BACKEND}/top-searches/${userId}`);
@@ -20,7 +19,6 @@ const BasedOnYourSearch = () => {
     }
   };
 
-  // Fetch articles based on a query
   const fetchScrapedArticles = async (query) => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_BACKEND}/scrape3`, {
@@ -41,10 +39,8 @@ const BasedOnYourSearch = () => {
         return;
       }
 
-      // Fetch top searches
       const topSearches = await fetchTopSearches();
 
-      // Fetch articles for each top search and aggregate them
       const allArticles = [];
       for (const [query] of topSearches) {
         const articles = await fetchScrapedArticles(query);

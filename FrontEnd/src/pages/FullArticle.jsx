@@ -5,7 +5,7 @@ import Example from "../components/Feed/Header/Header";
 import Sidebar from "../components/Feed/Utils/Sidebar";
 
 const FullArticle = () => {
-  const { id } = useParams(); // Get the article ID from the URL
+  const { id } = useParams(); 
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -38,15 +38,11 @@ const FullArticle = () => {
 
   return (
     <div className="bg-gray-50 text-gray-900 min-h-screen">
-      {/* Header */}
       <Example />
 
-      {/* Main Content with Sidebar */}
       <div className="flex max-w-7xl mx-auto p-4">
-        {/* Main Article Section */}
         <main className="w-full lg:w-3/4 pr-4">
           <div className="bg-white rounded-lg shadow-md p-6">
-            {/* Article Header */}
             <div className="flex items-center mb-4">
               <img
                 src="https://cdn-icons-png.flaticon.com/512/9187/9187604.png"
@@ -59,7 +55,6 @@ const FullArticle = () => {
               </div>
             </div>
 
-            {/* Article Image */}
             {imageUrl && (
               <div className="w-full h-60 bg-gray-200 rounded-lg overflow-hidden mb-4">
                 <img
@@ -70,12 +65,10 @@ const FullArticle = () => {
               </div>
             )}
 
-            {/* Article Content */}
             <div>
               <p className="text-gray-700 text-base leading-relaxed">{article.content}</p>
             </div>
 
-            {/* Hashtags */}
             {article.meta_tags && (
               <div className="mt-4">
                 {article.meta_tags.split(" ").map((tag, index) => (
@@ -89,7 +82,6 @@ const FullArticle = () => {
               </div>
             )}
 
-            {/* Like and Share Buttons */}
             <div className="mt-4 flex justify-between items-center border-t pt-4">
               <button className="text-blue-500 font-semibold hover:text-blue-700 flex items-center space-x-1">
                 <span>👍</span>
@@ -103,12 +95,10 @@ const FullArticle = () => {
           </div>
         </main>
 
-        {/* Sidebar */}
         <aside className="hidden lg:block w-1/4">
           <Sidebar />
         </aside>
 
-        {/* Responsive Sidebar Toggle */}
         <div className="block lg:hidden">
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}

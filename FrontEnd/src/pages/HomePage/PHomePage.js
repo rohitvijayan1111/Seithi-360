@@ -8,7 +8,7 @@ function HomePage() {
       sx={{
         backgroundColor: "#f9f9ff",
         minHeight: "100vh",
-        paddingTop: "80px", // Adjust for navbar height
+        paddingTop: "80px",
         paddingX: { xs: 2, sm: 4, md: 8 },
       }}
     >

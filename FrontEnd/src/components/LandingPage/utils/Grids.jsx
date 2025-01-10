@@ -27,7 +27,6 @@ export default function BentoGrid() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.5 }}
         >
-          {/* Mobile Friendly */}
           <motion.div
             className="relative lg:row-span-2"
             initial={{ x: -200, opacity: 0 }}
@@ -58,7 +57,6 @@ export default function BentoGrid() {
             <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 lg:rounded-l-[2rem]"></div>
           </motion.div>
 
-          {/* Performance */}
           <motion.div
             className="relative max-lg:row-start-1"
             initial={{ x: 200, opacity: 0 }}
@@ -87,7 +85,6 @@ export default function BentoGrid() {
             <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 max-lg:rounded-t-[2rem]"></div>
           </motion.div>
 
-          {/* Security */}
           <motion.div
             className="relative max-lg:row-start-3 lg:col-start-2 lg:row-start-2"
             initial={{ y: 200, opacity: 0 }}
@@ -116,7 +113,6 @@ export default function BentoGrid() {
             <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5"></div>
           </motion.div>
 
-          {/* Personalized Feeds */}
           <motion.div
             className="relative lg:row-span-2"
             initial={{ y: 200, opacity: 0 }}
@@ -134,7 +130,6 @@ export default function BentoGrid() {
                   interests.
                 </p>
               </div>
-              {/* List Features with Animation */}
               <motion.div
                 className="space-y-4 p-6 max-w-lg mx-auto"
                 initial={{ opacity: 0 }}

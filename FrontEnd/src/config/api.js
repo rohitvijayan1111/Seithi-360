@@ -7,7 +7,6 @@ const GUARDIAN_API_KEY = process.env.REACT_APP_GUARDIAN_KEY;
 const BBC_API_KEY = process.env.REACT_APP_NYT_KEY;
 const GNEWS_APY_KEY = process.env.REACT_APP_GNEWS_KEY;
 
-// Helper function to make API requests
 const makeApiRequest = async (url, params) => {
   try {
     const response = await axios.get(url, { params });
@@ -18,7 +17,6 @@ const makeApiRequest = async (url, params) => {
   }
 };
 
-// Helper function to normalize article data
 const normalizeArticles = (articles, source) => {
   return articles.map((article) => ({
     title: article.title || article.webTitle || article.headline.main,
@@ -42,7 +40,6 @@ export const fetchScrapedArticles = async (query) => {
       params: { q: query },
     });
 
-    // Return the scraped articles
     return response.data.articles || [];
   } catch (error) {
     console.error('Error fetching scraped articles:', error);
@@ -50,7 +47,6 @@ export const fetchScrapedArticles = async (query) => {
   }
 };
 
-// Fetch NewsAPI articles
 export const fetchNewsAPIArticles = async (query, filters) => {
   const searchUrl = `https://newsapi.org/v2/everything?q=${query}&from=${filters.date}`;
   const topHeadUrl = `https://newsapi.org/v2/top-headlines?country=us&category=${filters.category}`;
@@ -65,7 +61,6 @@ export const fetchNewsAPIArticles = async (query, filters) => {
   return data ? normalizeArticles(data.articles, 'NewsAPI') : [];
 };
 
-// Fetch The Guardian articles
 export const fetchGuardianArticles = async (query, filters) => {
   const searchUrl = `https://content.guardianapis.com/search`;
   const searchWithDateUrl = `https://content.guardianapis.com?from-date=${filters.date}`;
@@ -81,7 +76,6 @@ export const fetchGuardianArticles = async (query, filters) => {
   return data ? normalizeArticles(data.response.results, 'The Guardian') : [];
 };
 
-// Fetch NewYourk News articles
 export const fetchNYTimesArticles = async (query, filters) => {
   const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json`;
   const params = {
@@ -95,7 +89,6 @@ export const fetchNYTimesArticles = async (query, filters) => {
   return data ? normalizeArticles(data.response.docs, 'BBC News') : [];
 };
 
-// Fetch GNews News articles
 export const fetchGnewsArticles = async (query, filters) => {
   const url = `https://gnews.io/api/v4/top-headlines`;
   const params = {

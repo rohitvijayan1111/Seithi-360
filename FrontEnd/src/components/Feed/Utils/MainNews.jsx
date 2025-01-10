@@ -24,7 +24,7 @@ const categoryFeedUrls = {
 const MainNewsComponent = () => {
   const [activeCategory, setActiveCategory] = useState("Sports");
   const [feedData, setFeedData] = useState([]);
-  const [articles, setArticles] = useState([]); // New state for articles
+  const [articles, setArticles] = useState([]); 
   const [loading, setLoading] = useState(false);
   const [views, setViews] = useState({});
   const [alertMessage, setAlertMessage] = useState("");
@@ -55,7 +55,7 @@ const MainNewsComponent = () => {
 
   const fetchArticles = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/news-articles`); // Replace with your API endpoint
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/news-articles`); 
       setArticles(response.data);
     } catch (error) {
       console.error("Error fetching articles", error);
@@ -64,7 +64,7 @@ const MainNewsComponent = () => {
 
   useEffect(() => {
     fetchFeed(activeCategory);
-    fetchArticles(); // Fetch articles on component mount
+    fetchArticles(); 
   }, [activeCategory]);
 
   const handleInputChange = (index, type, value) => {
@@ -94,7 +94,7 @@ const MainNewsComponent = () => {
 
       try {
         const payload = {
-          username: "user123",  // Replace with dynamic username if needed
+          username: "user123",  
           thoughts: currentView,
           hashtags: currentHashtags,
           image_url: feedData[index]["media:content"]
@@ -104,7 +104,7 @@ const MainNewsComponent = () => {
           link: feedData[index].link[0],
         };
 
-        await axios.post(`${process.env.REACT_APP_BACKEND}/api/shareview`, payload); // Replace with your backend URL
+        await axios.post(`${process.env.REACT_APP_BACKEND}/api/shareview`, payload); 
         setAlertMessage("Your thoughts have been shared successfully!");
         setInputData((prevState) => ({
           ...prevState,
@@ -208,9 +208,8 @@ const MainNewsComponent = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
         {articles.length > 0 ? (
           articles.map((article) => {
-            // Construct the full URL for the image
             const imageUrl = article.image_path
-              ? `${process.env.REACT_APP_BACKEND}${article.image_path}` // Use the correct URL
+              ? `${process.env.REACT_APP_BACKEND}${article.image_path}`
               : "";
   
             const pubDate = new Date(article.created_at).toLocaleDateString();
@@ -219,7 +218,7 @@ const MainNewsComponent = () => {
               <div key={article.id} className="bg-white p-6 rounded-lg shadow-lg">
                 {imageUrl && (
                   <img
-                    src={imageUrl} // Use the constructed URL
+                    src={imageUrl} 
                     alt="Article Image"
                     className="w-full h-48 object-cover rounded-lg mb-4"
                   />
@@ -237,7 +236,7 @@ const MainNewsComponent = () => {
                 </button>
                 <br></br>
                 <Link
-                  to={`/article/${article.id}`} // Navigate to the article details page
+                  to={`/article/${article.id}`} 
                   className="mt-4 bg-blue-500 text-white mx-2 py-1 px-1 rounded-lg hover:bg-blue-700 text-sm"
                 >
                   Read More
@@ -295,10 +294,9 @@ const MainNewsComponent = () => {
       </div>
       <div className="mt-6 p-4 rounded-lg bg-gray-50">
         {renderFeedContent()}
-        {renderArticlesContent()} {/* Render articles below the news feed */}
+        {renderArticlesContent()} 
       </div>
 
-      {/* Alert Message */}
       {alertMessage && (
         <div
           className={`mt-4 p-4 rounded-lg ${

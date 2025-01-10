@@ -9,7 +9,6 @@ const Sidebar = ({ communities, onSelectCommunity }) => {
 
   return (
     <div>
-      {/* Toggle button for mobile */}
       <button
         onClick={toggleSidebar}
         className="lg:hidden fixed bottom-4 left-4 z-50 bg-indigo-600 text-white p-3 rounded-full shadow-md hover:bg-indigo-700 transition-all"
@@ -17,7 +16,7 @@ const Sidebar = ({ communities, onSelectCommunity }) => {
         <span className="text-2xl">☰</span>
       </button>
 
-      {/* Sidebar */}
+
       <div
         className={`fixed top-0 left-0 w-64 bg-white h-full border-r shadow-xl transition-transform duration-300 ease-in-out transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
@@ -41,7 +40,7 @@ const Sidebar = ({ communities, onSelectCommunity }) => {
               className="p-3 cursor-pointer hover:bg-indigo-100 hover:text-indigo-600 rounded-lg transition-colors flex items-center gap-3"
               onClick={() => {
                 onSelectCommunity(community);
-                setIsOpen(false); // Close sidebar on selection (for mobile)
+                setIsOpen(false); 
               }}
             >
               <div className="bg-indigo-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-semibold">

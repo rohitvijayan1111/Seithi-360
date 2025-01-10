@@ -21,7 +21,6 @@ export default function Feature() {
   return (
     <div className="bg-gray-100 py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Header Section */}
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-sm font-semibold text-indigo-500 tracking-wide uppercase">
             Powerful Features
@@ -45,7 +44,6 @@ export default function Feature() {
           </motion.p>
         </div>
 
-        {/* Features Section */}
         <div className="mt-20 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {[
             {
@@ -150,7 +148,6 @@ export default function Feature() {
           ))}
         </div>
 
-        {/* Footer Section */}
         <motion.div
           className="mt-16 text-center"
           initial={{ opacity: 0, y: 20 }}

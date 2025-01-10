@@ -6,18 +6,18 @@
   }
   
   .goog-te-menu-frame {
-    display: none !important; /* Ensures the translation dropdown is hidden */
+    display: none !important; 
   }
   
   body .goog-tooltip {
-    display: none !important; /* Hides the tooltip */
+    display: none !important; 
   }
   
   body .goog-tooltip:hover {
-    display: none !important; /* Ensures the tooltip stays hidden on hover */
+    display: none !important; 
   }
   
   body .goog-te-banner-frame {
-    display: none !important; /* Hides the Google Translate banner if it appears */
+    display: none !important; 
   }
   
